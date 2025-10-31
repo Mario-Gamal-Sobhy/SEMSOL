@@ -22,10 +22,8 @@ STT‑NLP Quickstart
 # install once (from repo root)
 pip install -r requirements.txt
 
-# inference without training (weights downloader)
-export STT_MODEL_URL=https://your.host/model.pt
-export STT_PREPROC_URL=https://your.host/preprocessor.pkl
-python STT-NLP/weights/download_weights.py
+# inference
+----
 
 # run the demo
 cd STT-NLP
@@ -45,11 +43,9 @@ pip install -r requirements.txt
 ```
 
 ### 2. Running
-- Inference without training (download weights):
+- Inference (download weights):
   ```bash
-  export STT_MODEL_URL=https://your.host/model.pt
-  export STT_PREPROC_URL=https://your.host/preprocessor.pkl
-  python STT-NLP/weights/download_weights.py
+
   ```
 - Streamlit demo:
   ```bash
