@@ -56,7 +56,11 @@ class ModelTrainer:
         self.logger.info("Starting model training...")
         self.logger.info(f"ModelTrainerConfig params: {self.config.params.model_trainer}")
 
-        train_loader, test_loader = self._get_data_loaders()
+        loaders = self._get_data_loaders()
+        if isinstance(loaders, tuple) and len(loaders) == 2:
+            train_loader, test_loader = loaders
+        else:
+            train_loader, test_loader = loaders, None
 
         # Extract parameters
         p = self.config.params.model_trainer
@@ -115,23 +119,25 @@ class ModelTrainer:
             self.logger.info(f"Epoch {epoch} Train Loss: {train_loss / max(1, len(train_loader))}")
 
             model.eval()
-            val_loss = 0
-            with torch.no_grad():
-                for batch_idx, (data, target, input_lengths, target_lengths) in enumerate(test_loader):
-                    data, target = data.to(self.device), target.long().to(self.device)
-                    output, output_lengths = model(data, input_lengths)
-                    output = output.transpose(0, 1).log_softmax(2)
-                    loss = torch.nn.functional.ctc_loss(
-                        log_probs=output,
-                        targets=target,
-                        input_lengths=output_lengths.cpu(),
-                        target_lengths=target_lengths.cpu(),
-                        blank=p.blank_index,
-                        zero_infinity=True,
-                    )
-                    val_loss += loss.item()
-
-            self.logger.info(f"Epoch {epoch} Validation Loss: {val_loss / max(1, len(test_loader))}")
+            if test_loader is not None:
+                val_loss = 0
+                with torch.no_grad():
+                    for batch_idx, (data, target, input_lengths, target_lengths) in enumerate(test_loader):
+                        data, target = data.to(self.device), target.long().to(self.device)
+                        output, output_lengths = model(data, input_lengths)
+                        output = output.transpose(0, 1).log_softmax(2)
+                        loss = torch.nn.functional.ctc_loss(
+                            log_probs=output,
+                            targets=target,
+                            input_lengths=output_lengths.cpu(),
+                            target_lengths=target_lengths.cpu(),
+                            blank=p.blank_index,
+                            zero_infinity=True,
+                        )
+                        val_loss += loss.item()
+                self.logger.info(f"Epoch {epoch} Validation Loss: {val_loss / max(1, len(test_loader))}")
+            else:
+                self.logger.info("No test loader available; skipping validation.")
 
             # Save checkpoint (epoch)
             epoch_ckpt = ckpt_dir / f"epoch_{epoch}.pt"
