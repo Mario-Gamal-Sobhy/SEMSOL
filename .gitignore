@@ -1,16 +1,25 @@
-data/Gaze360
-data/MPIIFaceGaze
-output/
-*.pt
-*.onnx
+Gaze Estimation/data/Gaze360
+Gaze Estimation/data/MPIIFaceGaze
+Gaze Estimation/output/
+Gaze Estimation/*.pt
+Gaze Estimation/*.onnx
+
+# Add datasets and artifacts for all projects
+# Root-level (if used)
+datasets/
+artifacts/
+# Subprojects
+STT-NLP/datasets/
+STT-NLP/artifacts/
+Gaze Estimation/weights/
 
 # Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+Gaze Estimation/__pycache__/
+Gaze Estimation/*.py[cod]
+Gaze Estimation/*$py.class
 
 # C extensions
-*.so
+'Gaze Estimation'/*.so
 
 # Distribution / packaging
 .Python
@@ -159,6 +168,10 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
