@@ -3,32 +3,36 @@ from torch.utils.data import Dataset
 import pandas as pd
 from pathlib import Path
 from typing import Tuple, Dict
+import os
 
 class CustomDataset(Dataset):
     def __init__(self, data_path: Path, char_map_file: Path):
         self.df = pd.read_csv(data_path)
         self.char_map = self._get_char_map(char_map_file)
+        # Lightweight validation only (avoid torch.load on init)
         self.df = self._filter_valid_data()
 
     def _filter_valid_data(self):
         valid_indices = []
         for i in range(len(self.df)):
             row = self.df.iloc[i]
-            transcript = row["transcript"]
-            if not transcript or pd.isna(transcript):
+            transcript = row.get("transcript", "")
+            if not isinstance(transcript, str) or not transcript.strip():
                 continue
 
-            spectrogram_path = Path(row["spectrogram_path"])
-            if not spectrogram_path.exists():
+            spectrogram_path = Path(row["spectrogram_path"]) if "spectrogram_path" in row else None
+            if spectrogram_path is None or not spectrogram_path.exists():
                 continue
-            
-            spectrogram = torch.load(spectrogram_path)
-            if spectrogram.shape[-1] == 0:
+            # Fast check: file should be non-empty; avoid torch.load here
+            try:
+                if os.path.getsize(spectrogram_path) <= 0:
+                    continue
+            except OSError:
                 continue
             
             valid_indices.append(i)
         
-        return self.df.iloc[valid_indices]
+        return self.df.iloc[valid_indices].reset_index(drop=True)
 
 
     def __len__(self) -> int:

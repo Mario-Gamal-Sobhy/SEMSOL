@@ -18,17 +18,26 @@ class ModelTrainer:
         train_dataset = CustomDataset(self.config.processed_train_path, self.config.char_map_file)
         test_dataset = CustomDataset(self.config.processed_test_path, self.config.char_map_file)
 
+        worker_count = max(1, (os.cpu_count() or 2) - 1)
         train_loader = DataLoader(
             train_dataset,
             batch_size=self.config.params.model_trainer.batch_size,
             shuffle=True,
-            collate_fn=self._collate_fn
+            collate_fn=self._collate_fn,
+            num_workers=worker_count,
+            persistent_workers=True,
+            prefetch_factor=2,
+            pin_memory=False,
         )
         test_loader = DataLoader(
             test_dataset,
             batch_size=self.config.params.model_trainer.batch_size,
             shuffle=False,
-            collate_fn=self._collate_fn
+            collate_fn=self._collate_fn,
+            num_workers=worker_count,
+            persistent_workers=True,
+            prefetch_factor=2,
+            pin_memory=False,
         )
         return train_loader, test_loader
 
