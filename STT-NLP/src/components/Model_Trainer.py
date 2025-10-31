@@ -18,7 +18,8 @@ class ModelTrainer:
         train_dataset = CustomDataset(self.config.processed_train_path, self.config.char_map_file)
         test_dataset = CustomDataset(self.config.processed_test_path, self.config.char_map_file)
 
-        worker_count = max(1, (os.cpu_count() or 2) - 1)
+        # Too many workers on CPU can slow startup; cap at a small number
+        worker_count = min(4, max(1, (os.cpu_count() or 2) // 2))
         train_loader = DataLoader(
             train_dataset,
             batch_size=self.config.params.model_trainer.batch_size,
