@@ -194,6 +194,10 @@ Checkpoints are saved under `STT-NLP/artifacts/model_trainer/checkpoints/` (epoc
 
 ### 4. Data
 - Place LibriSpeech under `STT-NLP/datasets/LibriSpeech/` (e.g., `train-clean-100/`, `test-clean/`).
+- Download LibriSpeech from OpenSLR (corpus 12):
+  - Train-clean-100: https://www.openslr.org/resources/12/train-clean-100.tar.gz
+  - Test-clean: https://www.openslr.org/resources/12/test-clean.tar.gz
+  - Full list: https://www.openslr.org/12
 
 ### 5. Troubleshooting
 - If you see shape or NaN CTC loss errors, lower LR (1e-4), reduce model size in `params.yaml`, and ensure `n_feats` matches MelSpectrogram `n_mels`.

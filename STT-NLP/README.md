@@ -68,6 +68,13 @@ Final model is saved to `artifacts/model_trainer/model.pt`.
 
 ---
 
+## Data
+- Place LibriSpeech under `datasets/LibriSpeech/` (e.g., `train-clean-100/`, `test-clean/`).
+- Download LibriSpeech (OpenSLR 12):
+  - Train-clean-100: https://www.openslr.org/resources/12/train-clean-100.tar.gz
+  - Test-clean: https://www.openslr.org/resources/12/test-clean.tar.gz
+  - Full list: https://www.openslr.org/12
+
 ## Faster training tips (CPU)
 - Use a small subset: edit `artifacts/data_ingestion/train.csv` and `test.csv` to keep only the first few thousand rows
 - In `params.yaml`: set `batch_size: 8–12`, `n_rnn_layers: 2–3`, `rnn_dim: 256–384`, `epochs: 3–5`
