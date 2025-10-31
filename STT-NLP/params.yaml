@@ -4,11 +4,11 @@ audio_preprocessing:
 
 model_trainer:
   epochs: 10
-  batch_size: 32
+  batch_size: 12
   learning_rate: 0.001
   n_cnn_layers: 3
-  n_rnn_layers: 5
-  rnn_dim: 512
+  n_rnn_layers: 3
+  rnn_dim: 256
   n_class: 29 # 28 characters + 1 for blank
   blank_index: 28
   n_feats: 128
