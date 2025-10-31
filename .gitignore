@@ -11,6 +11,11 @@ artifacts/
 # Subprojects
 STT-NLP/datasets/
 STT-NLP/artifacts/
+# Weights cache (keep downloader script)
+STT-NLP/weights/*
+!STT-NLP/weights/download_weights.py
+!STT-NLP/weights/README.md
+
 Gaze Estimation/weights/
 
 # Byte-compiled / optimized / DLL files (global)
