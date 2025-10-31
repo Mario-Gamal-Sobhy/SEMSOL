@@ -1,35 +1,96 @@
-# Core
+# =============================
+# Core & Utilities
+# =============================
 numpy
 scipy
 pandas
 PyYAML
 tqdm
 joblib
+matplotlib
+scikit-image
+pillow
 
-# PyTorch stack (CPU or CUDA as available)
+# =============================
+# PyTorch Stack (auto-selects CPU/CUDA)
+# =============================
 torch
-torchaudio
 torchvision
+torchaudio
 
-# Audio/STT
+# =============================
+# Audio / Speech-to-Text (STT)
+# =============================
 librosa
 soundfile
+webrtcvad
+noisereduce
+jiwer
+silero-vad
+openai-whisper
+ctranslate2
+faster-whisper
+speechrecognition
 python-box
 typeguard
-jiwer
 
-# Web demo
-streamlit
-streamlit-webrtc
-
-# CV/Gaze
+# =============================
+# Computer Vision / Gaze / Face
+# =============================
 opencv-python
+opencv-contrib-python
 onnx
 onnxruntime
 mediapipe
 uniface
+rembg
+PyMatting
 
-# Utils
-matplotlib
-scikit-image
-pillow
+# =============================
+# Web Demo
+# =============================
+streamlit
+streamlit-webrtc
+Flask
+Flask-WTF
+Flask-PyMongo
+
+# =============================
+# Cloud / Translation / API
+# =============================
+azure-cognitiveservices-speech
+google-cloud-speech
+google-cloud-translate
+google-auth
+huggingface-hub
+transformers
+translate
+googletrans==3.0.0
+libretranslatepy
+
+# =============================
+# NLP / Text / Embeddings
+# =============================
+nltk
+gensim
+sentencepiece
+regex
+tiktoken
+
+# =============================
+# Extra Utilities
+# =============================
+scikit-learn
+seaborn
+fsspec
+protobuf
+requests
+beautifulsoup4
+lxml
+python-slugify
+psutil
+platformdirs
+# =============================
+ipython
+jupyterlab
+ipywidgets

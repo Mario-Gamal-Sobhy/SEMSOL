@@ -13,7 +13,12 @@ STT-NLP/datasets/
 STT-NLP/artifacts/
 Gaze Estimation/weights/
 
-# Byte-compiled / optimized / DLL files
+# Byte-compiled / optimized / DLL files (global)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Project-specific caches
 Gaze Estimation/__pycache__/
 Gaze Estimation/*.py[cod]
 Gaze Estimation/*$py.class
