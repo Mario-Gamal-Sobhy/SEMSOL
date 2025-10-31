@@ -156,24 +156,6 @@ python main.py --model resnet34 --dataset gaze360 --weight weights/resnet34.pt -
 
 ---
 
-STT‑NLP Quickstart
-```
-# install once (from repo root)
-pip install -r requirements.txt
-
-# inference
-----
-
-# run the demo
-cd STT-NLP
-streamlit run app.py
-
-# train (with checkpoints & auto-resume)
-python -u main.py         # or: python -u run_trainer.py
-```
-
----
-
 ## STT‑NLP (Speech‑to‑Text)
 
 ### 1. Environment Setup
@@ -217,6 +199,21 @@ Checkpoints are saved under `STT-NLP/artifacts/model_trainer/checkpoints/` (epoc
 - If you see shape or NaN CTC loss errors, lower LR (1e-4), reduce model size in `params.yaml`, and ensure `n_feats` matches MelSpectrogram `n_mels`.
 - To start fresh, delete `STT-NLP/artifacts/model_trainer/checkpoints/latest.pt` and rerun.
 
+### 6. STT‑NLP Quickstart
+```
+# install once (from repo root)
+pip install -r requirements.txt
+
+# inference
+----
+
+# run the demo
+cd STT-NLP
+streamlit run app.py
+
+# train (with checkpoints & auto-resume)
+python -u main.py         # or: python -u run_trainer.py
+```
 ---
 
 ## Author
