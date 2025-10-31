@@ -222,9 +222,9 @@ Checkpoints are saved under `STT-NLP/artifacts/model_trainer/checkpoints/` (epoc
 ## Author
 **Mario Gamal Sobhy** 
 AI Engineer | Computer Vision | Deep Learning 
+[GitHub Repository](https://github.com/Mario-Gamal-Sobhy/SEMSOL)<br>
 **Abdelrahman Gaber**
 AI Engineer | Linux | NLP
-[GitHub Repository](https://github.com/Mario-Gamal-Sobhy/SEMSOL)
 
 ---
 
