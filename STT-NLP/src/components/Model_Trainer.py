@@ -74,7 +74,23 @@ class ModelTrainer:
 
         optimizer = torch.optim.AdamW(model.parameters(), lr=p.learning_rate)
 
-        for epoch in range(p.epochs):
+        # Checkpoint setup and auto-resume
+        ckpt_dir = Path(self.config.root_dir) / "checkpoints"
+        ckpt_dir.mkdir(parents=True, exist_ok=True)
+        latest_ckpt = ckpt_dir / "latest.pt"
+        start_epoch = 1
+        if latest_ckpt.exists():
+            try:
+                state = torch.load(latest_ckpt, map_location=self.device)
+                model.load_state_dict(state["model_state_dict"]) 
+                optimizer.load_state_dict(state["optimizer_state_dict"]) 
+                start_epoch = int(state.get("epoch", 0)) + 1
+                self.logger.info(f"Resuming from checkpoint: epoch {start_epoch}")
+            except Exception as e:
+                self.logger.info(f"Could not load checkpoint (starting fresh): {e}")
+
+        # Training loop with epoch-level checkpoints
+        for epoch in range(start_epoch, p.epochs + 1):
             model.train()
             train_loss = 0
             for batch_idx, (data, target, input_lengths, target_lengths) in enumerate(train_loader):
@@ -96,7 +112,7 @@ class ModelTrainer:
                 optimizer.step()
                 train_loss += loss.item()
 
-            self.logger.info(f"Epoch {epoch+1} Train Loss: {train_loss / max(1, len(train_loader))}")
+            self.logger.info(f"Epoch {epoch} Train Loss: {train_loss / max(1, len(train_loader))}")
 
             model.eval()
             val_loss = 0
@@ -115,7 +131,31 @@ class ModelTrainer:
                     )
                     val_loss += loss.item()
 
-            self.logger.info(f"Epoch {epoch+1} Validation Loss: {val_loss / max(1, len(test_loader))}")
+            self.logger.info(f"Epoch {epoch} Validation Loss: {val_loss / max(1, len(test_loader))}")
+
+            # Save checkpoint (epoch)
+            epoch_ckpt = ckpt_dir / f"epoch_{epoch}.pt"
+            torch.save({
+                "epoch": epoch,
+                "model_state_dict": model.state_dict(),
+                "optimizer_state_dict": optimizer.state_dict(),
+                "params": dict(p.__dict__) if hasattr(p, "__dict__") else None,
+            }, str(epoch_ckpt))
+            torch.save({
+                "epoch": epoch,
+                "model_state_dict": model.state_dict(),
+                "optimizer_state_dict": optimizer.state_dict(),
+                "params": dict(p.__dict__) if hasattr(p, "__dict__") else None,
+            }, str(latest_ckpt))
+
+            # Keep only last 3 checkpoints
+            ckpts = sorted(ckpt_dir.glob("epoch_*.pt"), key=lambda x: int(x.stem.split("_")[-1]))
+            while len(ckpts) > 3:
+                old = ckpts.pop(0)
+                try:
+                    old.unlink()
+                except Exception:
+                    pass
 
         # Save the trained model
         model_save_path = Path(self.config.model_name)
