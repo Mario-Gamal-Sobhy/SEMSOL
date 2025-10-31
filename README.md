@@ -17,69 +17,6 @@ SEMSOL/
 └── .gitignore                 # ignores datasets/, artifacts/, weights cache, pyc
 ```
 
-STT‑NLP Quickstart
-```
-# install once (from repo root)
-pip install -r requirements.txt
-
-# inference
-----
-
-# run the demo
-cd STT-NLP
-streamlit run app.py
-
-# train (with checkpoints & auto-resume)
-python -u main.py         # or: python -u run_trainer.py
-```
-
----
-
-## STT‑NLP (Speech‑to‑Text)
-
-### 1. Environment Setup
-```
-pip install -r requirements.txt
-```
-
-### 2. Running
-- Inference (download weights):
-  ```bash
-
-  ```
-- Streamlit demo:
-  ```bash
-  cd STT-NLP
-  streamlit run app.py
-  ```
-- Programmatic inference:
-  ```python
-  from src.pipeline.inference_pipeline import InferencePipeline
-  pipe = InferencePipeline()
-  print(pipe.predict("/path/to/audio.wav"))
-  ```
-
-### 3. Training (Checkpoints & Auto‑Resume)
-- End‑to‑end (ingestion → transformation → training):
-  ```bash
-  cd STT-NLP
-  python -u main.py
-  ```
-- Train only:
-  ```bash
-  python -u run_trainer.py
-  ```
-Checkpoints are saved under `STT-NLP/artifacts/model_trainer/checkpoints/` (epoch_N.pt and latest.pt). Training resumes from the last epoch automatically.
-
-### 4. Data
-- Place LibriSpeech under `STT-NLP/datasets/LibriSpeech/` (e.g., `train-clean-100/`, `test-clean/`).
-
-### 5. Troubleshooting
-- If you see shape or NaN CTC loss errors, lower LR (1e-4), reduce model size in `params.yaml`, and ensure `n_feats` matches MelSpectrogram `n_mels`.
-- To start fresh, delete `STT-NLP/artifacts/model_trainer/checkpoints/latest.pt` and rerun.
-
----
-
 # Gaze and Engagement Estimation with Blink Detection
 
 This project performs **real-time gaze estimation, engagement scoring, and eye-blink detection** using deep learning and computer vision.  
@@ -219,9 +156,74 @@ python main.py --model resnet34 --dataset gaze360 --weight weights/resnet34.pt -
 
 ---
 
+STT‑NLP Quickstart
+```
+# install once (from repo root)
+pip install -r requirements.txt
+
+# inference
+----
+
+# run the demo
+cd STT-NLP
+streamlit run app.py
+
+# train (with checkpoints & auto-resume)
+python -u main.py         # or: python -u run_trainer.py
+```
+
+---
+
+## STT‑NLP (Speech‑to‑Text)
+
+### 1. Environment Setup
+```
+pip install -r requirements.txt
+```
+
+### 2. Running
+- Inference (download weights):
+  ```bash
+
+  ```
+- Streamlit demo:
+  ```bash
+  cd STT-NLP
+  streamlit run app.py
+  ```
+- Programmatic inference:
+  ```python
+  from src.pipeline.inference_pipeline import InferencePipeline
+  pipe = InferencePipeline()
+  print(pipe.predict("/path/to/audio.wav"))
+  ```
+
+### 3. Training (Checkpoints & Auto‑Resume)
+- End‑to‑end (ingestion → transformation → training):
+  ```bash
+  cd STT-NLP
+  python -u main.py
+  ```
+- Train only:
+  ```bash
+  python -u run_trainer.py
+  ```
+Checkpoints are saved under `STT-NLP/artifacts/model_trainer/checkpoints/` (epoch_N.pt and latest.pt). Training resumes from the last epoch automatically.
+
+### 4. Data
+- Place LibriSpeech under `STT-NLP/datasets/LibriSpeech/` (e.g., `train-clean-100/`, `test-clean/`).
+
+### 5. Troubleshooting
+- If you see shape or NaN CTC loss errors, lower LR (1e-4), reduce model size in `params.yaml`, and ensure `n_feats` matches MelSpectrogram `n_mels`.
+- To start fresh, delete `STT-NLP/artifacts/model_trainer/checkpoints/latest.pt` and rerun.
+
+---
+
 ## Author
-**Mario Gamal Sobhy**  
-AI Engineer | Computer Vision | Deep Learning  
+**Mario Gamal Sobhy** 
+AI Engineer | Computer Vision | Deep Learning 
+**Abdelrahman Gaber**
+AI Engineer | Linux | NLP
 [GitHub Repository](https://github.com/Mario-Gamal-Sobhy/SEMSOL)
 
 ---
