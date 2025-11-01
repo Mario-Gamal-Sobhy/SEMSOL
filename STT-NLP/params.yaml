@@ -3,9 +3,9 @@ audio_preprocessing:
   new_sample_rate: 16000
 
 model_trainer:
-  epochs: 5
+  epochs: 12
   batch_size: 12
-  learning_rate: 0.001
+  learning_rate: 0.0001
   n_cnn_layers: 3
   n_rnn_layers: 3
   rnn_dim: 256

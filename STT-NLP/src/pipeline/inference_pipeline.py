@@ -15,6 +15,7 @@ class InferencePipeline:
         self.model_trainer_config = self.config_manager.get_model_trainer_config()
         self.data_transformation_config = self.config_manager.get_data_transformation_config()
         self.features_extractor = FeaturesExtractor(config=self.data_transformation_config)
+        # Load eval preprocessor (no masking)
         self.preprocessor = torch.load(self.data_transformation_config.preprocessor_object_file , weights_only=False)
         self.audio_preprocessor = AudioPreprocess(config=self.data_transformation_config)
         self.model = self.load_model()
@@ -52,19 +53,30 @@ class InferencePipeline:
             else:
                 raise FileOperationError("Unsupported audio input type; provide file path or BytesIO.")
 
-            # Preprocess to mel-spec (n_mels, time)
-            spec_nt: torch.Tensor = self.audio_preprocessor._process_audio(path, self.preprocessor)
-            # Shape to (1, 1, time, n_mels) like training
-            spec_bctf = spec_nt.unsqueeze(0).unsqueeze(0).transpose(2, 3)
+            # Preprocess to mel-spec: (channels=1, n_mels, time)
+            spec_cnt: torch.Tensor = self.audio_preprocessor._process_audio(path, self.preprocessor)
+            # Reorder to (channels=1, time, n_mels) then add batch -> (1, 1, time, n_mels)
+            spec_ctf = spec_cnt.transpose(1, 2)
+            spec_bctf = spec_ctf.unsqueeze(0)
 
             # Make prediction
             with torch.no_grad():
                 input_lengths = torch.tensor([spec_bctf.shape[2]], dtype=torch.int32)
                 output, _ = self.model(spec_bctf, input_lengths)
 
-            # Greedy decode
-            output = torch.argmax(output, dim=2).detach().cpu().numpy()
-            text: str = "".join([self.char_map.get(int(i), "") for i in output[0]])
+            # Greedy CTC collapse: remove repeats and blanks
+            p = self.model_trainer_config.params.model_trainer
+            blank_idx = int(p.blank_index)
+            idx_seq = torch.argmax(output, dim=2).detach().cpu().numpy()[0]
+            decoded = []
+            prev = None
+            for i in idx_seq:
+                i = int(i)
+                if i != blank_idx and i != prev:
+                    ch = self.char_map.get(i, "")
+                    decoded.append(" " if ch == "<SPACE>" else ch)
+                prev = i
+            text: str = "".join(decoded).strip()
             return text
         except Exception as e:
             raise FileOperationError(f"Error during inference for audio input: {e}")
