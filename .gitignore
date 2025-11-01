@@ -10,7 +10,8 @@ datasets/
 artifacts/
 # Subprojects
 STT-NLP/datasets/
-STT-NLP/artifacts/
+STT-NLP/artifacts/data_ingestion
+STT-NLP/artifacts/data_transformation
 # Weights cache (keep downloader script)
 STT-NLP/weights/*
 !STT-NLP/weights/download_weights.py
