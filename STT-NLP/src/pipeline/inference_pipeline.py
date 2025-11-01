@@ -15,7 +15,7 @@ class InferencePipeline:
         self.model_trainer_config = self.config_manager.get_model_trainer_config()
         self.data_transformation_config = self.config_manager.get_data_transformation_config()
         self.features_extractor = FeaturesExtractor(config=self.data_transformation_config)
-        self.preprocessor = torch.load(self.data_transformation_config.preprocessor_object_file)
+        self.preprocessor = torch.load(self.data_transformation_config.preprocessor_object_file , weights_only=False)
         self.audio_preprocessor = AudioPreprocess(config=self.data_transformation_config)
         self.model = self.load_model()
         self.char_map = {v: k for k, v in self.features_extractor.char_map.items()}
@@ -62,7 +62,7 @@ class InferencePipeline:
                 input_lengths = torch.tensor([spec_bctf.shape[2]], dtype=torch.int32)
                 output, _ = self.model(spec_bctf, input_lengths)
 
-            # Greedy decode (no CTC collapse implemented here)
+            # Greedy decode
             output = torch.argmax(output, dim=2).detach().cpu().numpy()
             text: str = "".join([self.char_map.get(int(i), "") for i in output[0]])
             return text

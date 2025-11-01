@@ -7,6 +7,8 @@ from src.components.CustomDataset import CustomDataset
 from src.model.SpeechToText import SpeechToText
 from pathlib import Path
 import os
+from box import ConfigBox
+import torch.serialization
 
 class ModelTrainer:
     def __init__(self, config: ModelTrainerConfig):
@@ -95,7 +97,8 @@ class ModelTrainer:
         start_epoch = 1
         if latest_ckpt.exists():
             try:
-                state = torch.load(latest_ckpt, map_location=self.device)
+                with torch.serialization.safe_globals([ConfigBox]):
+                    state = torch.load(latest_ckpt, map_location=self.device, weights_only=False)
                 model.load_state_dict(state["model_state_dict"]) 
                 optimizer.load_state_dict(state["optimizer_state_dict"]) 
                 start_epoch = int(state.get("epoch", 0)) + 1
