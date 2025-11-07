@@ -9,9 +9,6 @@ class CustomDataset(Dataset):
     def __init__(self, data_path: Path, char_map_file: Path):
         self.df = pd.read_csv(data_path)
         self.char_map = self._get_char_map(char_map_file)
-        # Fast startup: assume processed CSV is valid (produced by pipeline)
-        # Avoid any filesystem scans here to keep loader creation instant
-
 
 
     def __len__(self) -> int:

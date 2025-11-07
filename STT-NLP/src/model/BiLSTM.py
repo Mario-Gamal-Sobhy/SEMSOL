@@ -10,9 +10,9 @@ class BiLSTM(nn.Module):
         self.fc = nn.Linear(hidden_size * 2, num_classes)  # *2 for bidirectional
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # x shape: (batch, seq_len, features)
+
         out, _ = self.lstm(x)
-        # out shape: (batch, seq_len, hidden_size*2)
+
         out = self.fc(out)
-        # out shape: (batch, seq_len, num_classes)
+
         return out

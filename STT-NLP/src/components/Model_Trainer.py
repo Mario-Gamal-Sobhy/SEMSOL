@@ -9,6 +9,7 @@ from pathlib import Path
 import os
 from box import ConfigBox
 import torch.serialization
+from torch.amp import GradScaler, autocast
 
 class ModelTrainer:
     def __init__(self, config: ModelTrainerConfig):
@@ -89,6 +90,7 @@ class ModelTrainer:
         self.logger.info(f"Model type: {type(model)}")
 
         optimizer = torch.optim.AdamW(model.parameters(), lr=p.learning_rate)
+        scaler = GradScaler()
 
         # Checkpoint setup and auto-resume
         ckpt_dir = Path(self.config.root_dir) / "checkpoints"
@@ -113,20 +115,22 @@ class ModelTrainer:
             for batch_idx, (data, target, input_lengths, target_lengths) in enumerate(train_loader):
                 data, target = data.to(self.device), target.long().to(self.device)
 
-                output, output_lengths = model(data, input_lengths)
                 optimizer.zero_grad()
-                output = output.transpose(0, 1).log_softmax(2)
-                loss = torch.nn.functional.ctc_loss(
-                    log_probs=output,
-                    targets=target,
-                    input_lengths=output_lengths.cpu(),
-                    target_lengths=target_lengths.cpu(),
-                    blank=p.blank_index,
-                    zero_infinity=True,
-                )
-                loss.backward()
+                with autocast():
+                    output, output_lengths = model(data, input_lengths)
+                    output = output.transpose(0, 1).log_softmax(2)
+                    loss = torch.nn.functional.ctc_loss(
+                        log_probs=output,
+                        targets=target,
+                        input_lengths=output_lengths.cpu(),
+                        target_lengths=target_lengths.cpu(),
+                        blank=p.blank_index,
+                        zero_infinity=True,
+                    )
+                scaler.scale(loss).backward()
                 torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=5)
-                optimizer.step()
+                scaler.step(optimizer)
+                scaler.update()
                 train_loss += loss.item()
 
             self.logger.info(f"Epoch {epoch} Train Loss: {train_loss / max(1, len(train_loader))}")
@@ -134,7 +138,7 @@ class ModelTrainer:
             model.eval()
             if test_loader is not None:
                 val_loss = 0
-                with torch.no_grad():
+                with torch.no_grad(), autocast():
                     for batch_idx, (data, target, input_lengths, target_lengths) in enumerate(test_loader):
                         data, target = data.to(self.device), target.long().to(self.device)
                         output, output_lengths = model(data, input_lengths)
@@ -176,9 +180,10 @@ class ModelTrainer:
                 except Exception:
                     pass
 
-        # Save the trained model
-        model_save_path = Path(self.config.model_name)
-        model_save_path.parent.mkdir(parents=True, exist_ok=True)
-        torch.save(model.state_dict(), str(model_save_path))
-        self.logger.info(f"Model saved to {model_save_path}")
+            # Save the trained model
+            model_save_path = Path(self.config.model_name)
+            model_save_path.parent.mkdir(parents=True, exist_ok=True)
+            torch.save(model.state_dict(), str(model_save_path))
+            self.logger.info(f"Model saved to {model_save_path}")
+
         self.logger.info("Model training completed.")

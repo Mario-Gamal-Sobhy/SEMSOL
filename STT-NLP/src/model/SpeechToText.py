@@ -19,13 +19,13 @@ class SpeechToText(nn.Module):
 
     def forward(self, x: torch.Tensor, input_lengths: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         x = self.cnn(x)
-        # x shape: (batch, cnn_out_channels, reduced_time, reduced_n_mels)
+
         x = x.permute(0, 2, 1, 3).contiguous()
         sizes = x.size()
         x = x.view(sizes[0], sizes[1], sizes[2] * sizes[3])  # (batch, seq_len, features)
         x = self.rnn(x)
 
-        # Calculate output lengths after CNN time downsampling
+
         output_lengths = input_lengths
         for _ in range(self.n_cnn_layers):
             output_lengths = torch.floor((output_lengths - 1) / self.stride) + 1

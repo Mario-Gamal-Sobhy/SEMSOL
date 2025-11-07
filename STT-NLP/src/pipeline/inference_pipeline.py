@@ -59,7 +59,7 @@ class InferencePipeline:
             spec_ctf = spec_cnt.transpose(1, 2)
             spec_bctf = spec_ctf.unsqueeze(0)
 
-            # Make prediction
+            
             with torch.no_grad():
                 input_lengths = torch.tensor([spec_bctf.shape[2]], dtype=torch.int32)
                 output, _ = self.model(spec_bctf, input_lengths)

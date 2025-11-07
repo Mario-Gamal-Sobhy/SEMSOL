@@ -2,8 +2,8 @@ import streamlit as st
 from src.pipeline.inference_pipeline import InferencePipeline
 import io
 
-st.set_page_config(page_title="STT-NLP Transcription", page_icon="🎤", layout="centered")
-st.title("Speech-to-Text (STT-NLP)")
+st.set_page_config(page_title="STT Transcription",layout="centered")
+st.title("Speech-to-Text")
 
 @st.cache_resource
 def load_pipeline():
@@ -23,5 +23,3 @@ if uploaded is not None:
         st.success("Done")
         st.write("Transcription:")
         st.text_area("", value=text, height=200)
-
-st.caption("Model and preprocessor are loaded from artifacts as configured in config.yaml.")
