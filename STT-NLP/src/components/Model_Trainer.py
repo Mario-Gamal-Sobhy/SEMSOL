@@ -9,7 +9,7 @@ from pathlib import Path
 import os
 from box import ConfigBox
 import torch.serialization
-from torch.amp import GradScaler, autocast
+from torch.cuda.amp import GradScaler, autocast
 
 class ModelTrainer:
     def __init__(self, config: ModelTrainerConfig):
