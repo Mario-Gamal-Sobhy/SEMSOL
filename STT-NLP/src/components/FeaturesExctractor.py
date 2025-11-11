@@ -2,7 +2,7 @@ import torch
 from src.config.entity import DataTransformationConfig
 from src import get_logger
 from pathlib import Path
-from typing import Tuple, List, Dict, Any
+from typing import Dict
 
 class FeaturesExtractor:
     def __init__(self, config: DataTransformationConfig = None, char_map_file: Path = None):

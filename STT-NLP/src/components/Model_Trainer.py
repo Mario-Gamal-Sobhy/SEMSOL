@@ -18,11 +18,14 @@ class ModelTrainer:
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
     def _get_data_loaders(self):
-        train_dataset = CustomDataset(self.config.processed_train_path, self.config.char_map_file)
-        test_dataset = CustomDataset(self.config.processed_test_path, self.config.char_map_file)
+        from src.components.FeaturesExctractor import FeaturesExtractor
+        features_extractor = FeaturesExtractor(char_map_file=self.config.char_map_file)
+        train_dataset = CustomDataset(self.config.processed_train_path, features_extractor)
+        test_dataset = CustomDataset(self.config.processed_test_path, features_extractor)
 
         # Too many workers on CPU can slow startup; cap at a small number
         worker_count = min(4, max(1, (os.cpu_count() or 2) // 2))
+
         train_loader = DataLoader(
             train_dataset,
             batch_size=self.config.params.model_trainer.batch_size,
@@ -46,16 +49,17 @@ class ModelTrainer:
         return train_loader, test_loader
 
     def _collate_fn(self, batch):
-        spectrograms = [item[0].squeeze(0) for item in batch]
-        labels = [item[1] for item in batch]
-        # time dimension (T) is dim 0 after dataset transposes to (T, n_mels)
-        input_lengths = [spec.shape[0] for spec in spectrograms]
-        label_lengths = [len(label) for label in labels]
+        # Sort the batch by spectrogram length in descending order
+        batch = sorted(batch, key=lambda x: x[0].shape[0], reverse=True)
+        
+        spectrograms, labels, input_lengths, label_lengths = zip(*batch)
 
-        # Pad spectrograms => (B, 1, max_T, n_mels)
+        spectrograms = [spec.squeeze(0) for spec in spectrograms]
+        
+        # Pad spectrograms
         padded_spectrograms = nn.utils.rnn.pad_sequence(spectrograms, batch_first=True).unsqueeze(1)
-
-        # Concatenate labels for CTC targets and ensure Long dtype
+        
+        # Concatenate labels
         concatenated_labels = torch.cat([lbl.long() for lbl in labels])
 
         return (
@@ -164,6 +168,7 @@ class ModelTrainer:
                 "optimizer_state_dict": optimizer.state_dict(),
                 "params": dict(p.__dict__) if hasattr(p, "__dict__") else None,
             }, str(epoch_ckpt))
+            
             torch.save({
                 "epoch": epoch,
                 "model_state_dict": model.state_dict(),

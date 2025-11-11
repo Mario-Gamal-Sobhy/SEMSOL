@@ -2,20 +2,20 @@ from src.config.Configuration import ConfigurationManager
 from src.components.FeaturesExctractor import FeaturesExtractor
 from src.model.SpeechToText import SpeechToText
 import torch
-import torchaudio
 from src.components.Audio_Preprocess import AudioPreprocess
 from src.exceptions import FileOperationError
 from pathlib import Path
 import tempfile
 import io
+from src import get_logger
 
 class InferencePipeline:
     def __init__(self):
+        self.logger = get_logger("InferencePipeline")
         self.config_manager = ConfigurationManager()
         self.model_trainer_config = self.config_manager.get_model_trainer_config()
         self.data_transformation_config = self.config_manager.get_data_transformation_config()
         self.features_extractor = FeaturesExtractor(config=self.data_transformation_config)
-        # Load eval preprocessor (no masking)
         self.preprocessor = torch.load(self.data_transformation_config.preprocessor_object_file , weights_only=False)
         self.audio_preprocessor = AudioPreprocess(config=self.data_transformation_config)
         self.model = self.load_model()
@@ -42,6 +42,7 @@ class InferencePipeline:
 
     def predict(self, audio_input) -> str:
         try:
+            
             # Accept path-like or in-memory BytesIO
             if isinstance(audio_input, (str, Path)):
                 path = Path(audio_input)
@@ -53,12 +54,13 @@ class InferencePipeline:
             else:
                 raise FileOperationError("Unsupported audio input type; provide file path or BytesIO.")
 
-            # Preprocess to mel-spec: (channels=1, n_mels, time)
             spec_cnt: torch.Tensor = self.audio_preprocessor._process_audio(path, self.preprocessor)
-            # Reorder to (channels=1, time, n_mels) then add batch -> (1, 1, time, n_mels)
             spec_ctf = spec_cnt.transpose(1, 2)
             spec_bctf = spec_ctf.unsqueeze(0)
 
+            self.logger.info(f"spec_cnt shape: {spec_cnt.shape}")
+            self.logger.info(f"spec_cnt min: {spec_cnt.min()}, max: {spec_cnt.max()}, mean: {spec_cnt.mean()}")
+            self.logger.info(f"spec_bctf shape: {spec_bctf.shape}")
             
             with torch.no_grad():
                 input_lengths = torch.tensor([spec_bctf.shape[2]], dtype=torch.int32)
@@ -78,5 +80,6 @@ class InferencePipeline:
                 prev = i
             text: str = "".join(decoded).strip()
             return text
+        
         except Exception as e:
             raise FileOperationError(f"Error during inference for audio input: {e}")

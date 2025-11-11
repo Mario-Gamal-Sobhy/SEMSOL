@@ -23,12 +23,14 @@ class SpeechToText(nn.Module):
         x = x.permute(0, 2, 1, 3).contiguous()
         sizes = x.size()
         x = x.view(sizes[0], sizes[1], sizes[2] * sizes[3])  # (batch, seq_len, features)
-        x = self.rnn(x)
-
 
         output_lengths = input_lengths
         for _ in range(self.n_cnn_layers):
             output_lengths = torch.floor((output_lengths - 1) / self.stride) + 1
         output_lengths = output_lengths.int()
+
+        x = nn.utils.rnn.pack_padded_sequence(x, output_lengths.cpu(), batch_first=True)
+
+        x = self.rnn(x)
         
         return x, output_lengths

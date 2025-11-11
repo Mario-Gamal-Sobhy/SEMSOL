@@ -12,7 +12,7 @@ class BiLSTM(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
 
         out, _ = self.lstm(x)
-
+        out, _ = nn.utils.rnn.pad_packed_sequence(out, batch_first=True)
         out = self.fc(out)
 
         return out

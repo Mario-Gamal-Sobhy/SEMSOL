@@ -36,6 +36,7 @@ class AudioCaptureIngestion:
                 self.logger.info(f"Searching for transcripts in: {split_path}")
                 transcript_files = list(split_path.rglob("*.trans.txt"))
                 self.logger.info(f"Found {len(transcript_files)} transcript files.")
+                
                 for transcript_file in tqdm(transcript_files, desc=f"Processing {split_name} transcripts"):
                     with open(transcript_file, "r", encoding="utf-8") as f:
                         for line in f:

@@ -34,17 +34,21 @@ class AudioPreprocess:
         except Exception as e:
             self.logger.error(f"Error in creating preprocessing object: {e}")
             raise AudioProcessingError(f"Failed to create preprocessing object: {e}")
+        
 
     def _process_audio(self, audio_path: Path, transform: torch.nn.Module) -> torch.Tensor:
         try:
+
             waveform, sample_rate = torchaudio.load(audio_path)
             if waveform.shape[0] > 1:
                 waveform = torch.mean(waveform, dim=0, keepdim=True)
             spectrogram = transform(waveform)
             return spectrogram
+        
         except Exception as e:
             self.logger.error(f"Error processing audio file {audio_path}: {e}")
             raise AudioProcessingError(f"Failed to process audio file {audio_path}: {e}")
+
 
     def perform_transformation(self):
         try:

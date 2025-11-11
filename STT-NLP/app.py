@@ -21,5 +21,4 @@ if uploaded is not None:
             buf = io.BytesIO(uploaded.read())
             text = pipe.predict(buf)
         st.success("Done")
-        st.write("Transcription:")
-        st.text_area("", value=text, height=200)
+        st.text_area("Transcription:", value=text, height=200)

@@ -3,12 +3,12 @@ audio_preprocessing:
   new_sample_rate: 16000
 
 model_trainer:
-  epochs: 30
-  batch_size: 32
+  epochs: 10 # Consider a smaller number for initial tests, as CPU training is slow
+  batch_size: 8 # Reduced for CPU to manage memory and speed
   learning_rate: 0.0001
   n_cnn_layers: 3
-  n_rnn_layers: 3
-  rnn_dim: 256
+  n_rnn_layers: 2 # Reduced for faster training on CPU
+  rnn_dim: 256 # A moderate size for a balance of performance and speed
   n_class: 29 # 28 characters + 1 for blank
   blank_index: 28
   n_feats: 128
