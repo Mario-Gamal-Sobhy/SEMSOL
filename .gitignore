@@ -6,7 +6,7 @@ Gaze Estimation/*.onnx
 
 # Add datasets and artifacts for all projects
 # Root-level (if used)
-datasets/
+
 artifacts/
 # Subprojects
 
