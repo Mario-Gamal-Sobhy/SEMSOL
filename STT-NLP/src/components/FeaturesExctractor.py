@@ -5,9 +5,11 @@ from pathlib import Path
 from typing import Dict
 
 class FeaturesExtractor:
+
     def __init__(self, config: DataTransformationConfig = None, char_map_file: Path = None):
         self.config = config
         self.logger = get_logger("Features Extractor")
+
         if config:
             self.char_map = self._get_char_map(config.char_map_file)
         elif char_map_file:
@@ -17,15 +19,20 @@ class FeaturesExtractor:
 
     def _get_char_map(self, char_map_file: Path) -> Dict[str, int]:
         """Returns a character map for encoding and decoding transcripts from a file."""
+
         char_map = {}
+
         with open(char_map_file, "r", encoding="utf-8") as f:
             for line in f:
                 ch, index = line.strip().split()
                 char_map[ch] = int(index)
+
         return char_map
+
 
     def text_transform(self, text: str) -> torch.Tensor:
         """Converts a transcript into a tensor of character indices."""
+        
         text = text.lower()
         indices = []
         for c in text:

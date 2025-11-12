@@ -19,10 +19,12 @@ class AudioPreprocess:
         """
         try:
             self.logger.info(f"Creating {'train' if train else 'eval'} preprocessing object...")
+
             chain = [
                 torchaudio.transforms.Resample(orig_freq=self.config.original_sample_rate, new_freq=self.config.new_sample_rate),
                 torchaudio.transforms.MelSpectrogram(sample_rate=self.config.new_sample_rate, n_mels=128, n_fft=400, hop_length=160),
             ]
+
             if train:
                 chain.extend([
                     torchaudio.transforms.FrequencyMasking(freq_mask_param=15),
@@ -31,6 +33,7 @@ class AudioPreprocess:
             transforms = torch.nn.Sequential(*chain)
             self.logger.info("Successfully created preprocessing object.")
             return transforms
+        
         except Exception as e:
             self.logger.error(f"Error in creating preprocessing object: {e}")
             raise AudioProcessingError(f"Failed to create preprocessing object: {e}")
@@ -40,9 +43,12 @@ class AudioPreprocess:
         try:
 
             waveform, sample_rate = torchaudio.load(audio_path)
+
             if waveform.shape[0] > 1:
                 waveform = torch.mean(waveform, dim=0, keepdim=True)
+                
             spectrogram = transform(waveform)
+
             return spectrogram
         
         except Exception as e:

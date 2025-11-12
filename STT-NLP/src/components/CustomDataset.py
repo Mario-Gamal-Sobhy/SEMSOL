@@ -6,6 +6,7 @@ from typing import Tuple
 from src.components.FeaturesExctractor import FeaturesExtractor
 
 class CustomDataset(Dataset):
+
     def __init__(self, data_path: Path, features_extractor: FeaturesExtractor):
         self.df = pd.read_csv(data_path)
         self.features_extractor = features_extractor
@@ -14,6 +15,7 @@ class CustomDataset(Dataset):
         return len(self.df)
 
     def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor, int, int]:
+
         row = self.df.iloc[idx]
         spectrogram_path = Path(row["spectrogram_path"])
         transcript = row["transcript"]
