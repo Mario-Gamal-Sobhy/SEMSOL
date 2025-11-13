@@ -8,10 +8,12 @@ Gaze Estimation/*.onnx
 # Root-level (if used)
 datasets/
 artifacts/
-# Subprojects
+# Subprojectscts
 
 # Weights cache (keep downloader script)
 STT-NLP/weights/*
+STT-NLP/artifacts/data_ingestion/
+STT-NLP/artifacts/data_transformation/
 !STT-NLP/weights/download_weights.py
 !STT-NLP/weights/README.md
 
