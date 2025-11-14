@@ -33,6 +33,7 @@ faster-whisper
 speechrecognition
 python-box
 typeguard
+sounddevice
 
 # =============================
 # Computer Vision / Gaze / Face

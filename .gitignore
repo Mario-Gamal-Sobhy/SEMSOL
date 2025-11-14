@@ -7,7 +7,7 @@ Gaze Estimation/*.onnx
 # Add datasets and artifacts for all projects
 # Root-level (if used)
 datasets/
-artifacts/
+
 # Subprojectscts
 
 # Weights cache (keep downloader script)

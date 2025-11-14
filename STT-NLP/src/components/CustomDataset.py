@@ -21,7 +21,7 @@ class CustomDataset(Dataset):
         transcript = row["transcript"]
 
         spectrogram = torch.load(spectrogram_path)
-        spectrogram = spectrogram.squeeze(0).t()
+        spectrogram = spectrogram.squeeze(0)
 
         label = self.features_extractor.text_transform(transcript)
 

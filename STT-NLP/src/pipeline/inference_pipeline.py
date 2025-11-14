@@ -55,12 +55,11 @@ class InferencePipeline:
                 raise FileOperationError("Unsupported audio input type; provide file path or BytesIO.")
 
             spec_cnt: torch.Tensor = self.audio_preprocessor._process_audio(path, self.preprocessor)
-            spec_ctf = spec_cnt.transpose(1, 2)
-            spec_bctf = spec_ctf.unsqueeze(0)
+            spec_bctf = spec_cnt.unsqueeze(0)
 
                         
             with torch.no_grad():
-                input_lengths = torch.tensor([spec_bctf.shape[2]], dtype=torch.int32)
+                input_lengths = torch.tensor([spec_bctf.shape[3]], dtype=torch.int32)
                 output, _ = self.model(spec_bctf, input_lengths)
 
             # Greedy CTC collapse: remove repeats and blanks

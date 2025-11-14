@@ -54,10 +54,10 @@ class ModelTrainer:
         
         spectrograms, labels, input_lengths, label_lengths = zip(*batch)
 
-        spectrograms = [spec.squeeze(0) for spec in spectrograms]
-        
-        # Pad spectrograms
-        padded_spectrograms = nn.utils.rnn.pad_sequence(spectrograms, batch_first=True).unsqueeze(1)
+        spectrograms = [s.t() for s in spectrograms]
+        padded_spectrograms = nn.utils.rnn.pad_sequence(spectrograms, batch_first=True)
+        padded_spectrograms = padded_spectrograms.permute(0, 2, 1)
+        padded_spectrograms = padded_spectrograms.unsqueeze(1)
         
         # Concatenate labels
         concatenated_labels = torch.cat([lbl.long() for lbl in labels])

@@ -33,9 +33,10 @@ class EvaluationPipeline:
                 predictions.append(prediction)
 
             # Calculate WER and CER
-            measures: dict = jiwer.compute_measures(ground_truth, predictions)
-            wer: float = measures['wer']
-            cer: float = measures['cer']
+            word_results = jiwer.process_words(ground_truth, predictions)
+            char_results = jiwer.process_characters(ground_truth, predictions)
+            wer: float = word_results.wer
+            cer: float = char_results.cer
 
             self.logger.info(f"Word Error Rate (WER): {wer}")
             self.logger.info(f"Character Error Rate (CER): {cer}")

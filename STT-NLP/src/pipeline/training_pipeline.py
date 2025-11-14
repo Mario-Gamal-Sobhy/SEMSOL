@@ -38,6 +38,7 @@ class TrainingPipeline:
             self.logger.info("Data transformation artifacts already exist. Skipping.")
 
         # Perform model training
+        self.logger.info(f"Model path: {model_trainer_config.model_name}")
         if not Path(model_trainer_config.model_name).exists():
             create_directories([model_trainer_config.root_dir])
             model_trainer = ModelTrainer(config=model_trainer_config)
