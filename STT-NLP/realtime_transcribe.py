@@ -8,9 +8,28 @@ import threading
 import queue
 import torch
 import torchaudio
+from typing import Optional
+
+# --- Helper Function ---
+def get_default_input_device_samplerate() -> int:
+    """Get the default input device's sample rate."""
+    try:
+        device_info = sd.query_devices(kind='input')
+        if isinstance(device_info, dict) and 'default_samplerate' in device_info:
+            return int(device_info['default_samplerate'])
+        else:
+            # Fallback for systems where query_devices returns a list
+            devices = sd.query_devices()
+            for i, device in enumerate(devices):
+                if device['name'] == 'default':
+                    return int(device['default_samplerate'])
+            return 44100 # Fallback if default not found
+    except Exception as e:
+        print(f"Could not query devices, falling back to 44100 Hz: {e}")
+        return 44100
 
 # --- Configuration ---
-CAPTURE_SAMPLE_RATE = 44100  # Supported capture rate
+CAPTURE_SAMPLE_RATE = get_default_input_device_samplerate()
 TARGET_SAMPLE_RATE = 16000  # 16kHz for the model
 CHUNK_DURATION_MS = 30  # 30ms
 CHUNK_SAMPLES = int(CAPTURE_SAMPLE_RATE * CHUNK_DURATION_MS / 1000)
@@ -19,89 +38,143 @@ SILENCE_THRESHOLD_S = 0.5 # Seconds of silence to trigger transcription
 MIN_SPEECH_DURATION_S = 0.3 # Minimum duration of speech to consider for transcription
 
 class RealtimeTranscriber:
+    """
+    A class to handle real-time audio transcription.
+
+    This class captures audio from the microphone, detects speech using Voice
+    Activity Detection (VAD), and transcribes the speech to text in real-time.
+    """
     def __init__(self):
+        """Initializes the RealtimeTranscriber."""
         self.vad = webrtcvad.Vad(VAD_AGGRESSIVENESS)
         self.pipe = InferencePipeline()
         self.resampler = torchaudio.transforms.Resample(
             orig_freq=CAPTURE_SAMPLE_RATE, new_freq=TARGET_SAMPLE_RATE
         )
-        self.audio_buffer = []
+        self.audio_buffer: list[np.ndarray] = []
         self.is_speaking = False
         self.silence_frames = 0
         self.speech_frames = 0
-        self.last_transcript = ""
-        self.transcription_queue = queue.Queue()
+        self.transcription_queue: queue.Queue[io.BytesIO] = queue.Queue()
+        self._resampled_buffer = np.array([], dtype=np.float32)
+        self._stop_event: Optional[threading.Event] = None
 
-    def _transcribe_chunk(self, audio_data):
+    def _transcribe_chunk(self, audio_data: io.BytesIO):
+        """Transcribes a chunk of audio data."""
         try:
             text = self.pipe.predict(audio_data)
-            if text and text != self.last_transcript:
+            if text:
                 print(f"Transcription: {text}")
-                self.last_transcript = text
         except Exception as e:
             print(f"Error during transcription: {e}")
 
-    def _process_audio(self, indata):
+    def _process_audio(self, indata: np.ndarray):
+        """Processes a chunk of audio data from the input stream."""
         # Resample the audio first
         audio_tensor = torch.from_numpy(indata.flatten()).float()
         resampled_audio = self.resampler(audio_tensor)
         
-        # Convert to 16-bit PCM for VAD
-        audio_chunk_16k = (resampled_audio.numpy() * 32767).astype(np.int16)
-        
-        # VAD expects chunks of 10, 20, or 30 ms.
-        # We need to ensure our resampled chunk is the right size.
+        # Append to our resampled buffer
+        self._resampled_buffer = np.append(self._resampled_buffer, resampled_audio.numpy())
+
+        # Process the buffer in VAD-sized chunks
         expected_samples = int(TARGET_SAMPLE_RATE * CHUNK_DURATION_MS / 1000)
-        if len(audio_chunk_16k) != expected_samples:
-            # This might happen due to resampling, pad or truncate if necessary
-            # For simplicity, we'll skip this chunk if the size is wrong.
-            # A more robust solution would buffer and frame the audio correctly.
-            return
+        while len(self._resampled_buffer) >= expected_samples:
+            # Get a chunk from the buffer
+            chunk_16k_float = self._resampled_buffer[:expected_samples]
+            self._resampled_buffer = self._resampled_buffer[expected_samples:]
+            
+            # Convert to 16-bit PCM for VAD
+            chunk_16k_int16 = (chunk_16k_float * 32767).astype(np.int16)
 
-        is_speech = self.vad.is_speech(audio_chunk_16k.tobytes(), TARGET_SAMPLE_RATE)
+            is_speech = self.vad.is_speech(chunk_16k_int16.tobytes(), TARGET_SAMPLE_RATE)
 
-        if is_speech:
-            self.silence_frames = 0
-            self.speech_frames += 1
-            self.audio_buffer.append(audio_chunk_16k)
-            if not self.is_speaking:
-                print("Speaking detected...")
-                self.is_speaking = True
-        else:
-            self.silence_frames += 1
-            if self.is_speaking:
-                num_silence_chunks = (SILENCE_THRESHOLD_S * 1000) / CHUNK_DURATION_MS
-                num_speech_chunks = (MIN_SPEECH_DURATION_S * 1000) / CHUNK_DURATION_MS
-                if self.silence_frames > num_silence_chunks and self.speech_frames > num_speech_chunks:
-                    print("Silence detected, transcribing...")
-                    full_audio = np.concatenate(self.audio_buffer)
-                    self.audio_buffer = []
-                    self.speech_frames = 0
-                    self.is_speaking = False
+            if is_speech:
+                self.silence_frames = 0
+                self.speech_frames += 1
+                self.audio_buffer.append(chunk_16k_int16)
+                if not self.is_speaking:
+                    print("Speaking detected...")
+                    self.is_speaking = True
+            else:
+                self.silence_frames += 1
+                if self.is_speaking:
+                    num_silence_chunks = (SILENCE_THRESHOLD_S * 1000) / CHUNK_DURATION_MS
+                    num_speech_chunks = (MIN_SPEECH_DURATION_S * 1000) / CHUNK_DURATION_MS
+                    if self.silence_frames > num_silence_chunks and self.speech_frames > num_speech_chunks:
+                        print("Silence detected, transcribing...")
+                        full_audio = np.concatenate(self.audio_buffer)
+                        self.audio_buffer = []
+                        self.speech_frames = 0
+                        self.is_speaking = False
 
-                    # Create in-memory WAV file
-                    byte_io = io.BytesIO()
-                    write(byte_io, TARGET_SAMPLE_RATE, full_audio)
-                    byte_io.seek(0)
-                    
-                    # Offload transcription to a separate thread
-                    threading.Thread(target=self._transcribe_chunk, args=(byte_io,)).start()
+                        # Create in-memory WAV file
+                        byte_io = io.BytesIO()
+                        write(byte_io, TARGET_SAMPLE_RATE, full_audio)
+                        byte_io.seek(0)
+                        
+                        
+                        
+                        # Offload transcription to a separate thread
+                        
+                        threading.Thread(target=self._transcribe_chunk, args=(byte_io,)).start()
+                        
 
+                        
     def start(self):
-        print("Starting real-time transcription. Press Ctrl+C to stop.")
+                        
+        """Starts the real-time transcription process."""
+                        
+        print(f"Starting real-time transcription with capture rate {CAPTURE_SAMPLE_RATE}Hz. Press Ctrl+C to stop.")
+                        
+        self._stop_event = threading.Event()
+                        
         with sd.InputStream(samplerate=CAPTURE_SAMPLE_RATE, channels=1, dtype='float32', blocksize=CHUNK_SAMPLES, callback=self.audio_callback):
-            while True:
-                try:
-                    pass
-                except KeyboardInterrupt:
-                    print("\nStopping transcription.")
-                    break
+                        
+            self._stop_event.wait()
+                        
 
-    def audio_callback(self, indata, frames, time, status):
+                        
+    def stop(self):
+                        
+        """Stops the real-time transcription process."""
+                        
+        print("\nStopping transcription.")
+                        
+        if self._stop_event:
+                        
+            self._stop_event.set()
+                        
+
+                        
+    def audio_callback(self, indata: np.ndarray, frames: int, time, status: sd.CallbackFlags):
+                        
+        """Callback function for the audio stream."""
+                        
         if status:
+                        
             print(status, flush=True)
+                        
         self._process_audio(indata)
+                        
 
-if __name__ == "__main__":
+                        
+def main():
+                        
+    """Main function to run the real-time transcriber."""
+                        
     transcriber = RealtimeTranscriber()
-    transcriber.start()
+                        
+    try:
+                        
+        transcriber.start()
+                        
+    except KeyboardInterrupt:
+                        
+        transcriber.stop()
+                        
+
+                        
+if __name__ == "__main__":
+                        
+    main()

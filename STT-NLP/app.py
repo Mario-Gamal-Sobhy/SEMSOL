@@ -9,6 +9,8 @@ import threading
 import queue
 import torch
 import torchaudio
+from src import database
+import pandas as pd
 
 # --- Page Configuration ---
 st.set_page_config(
@@ -67,7 +69,7 @@ if pipe is None:
 
 # --- Main Application ---
 st.sidebar.title("Options")
-app_mode = st.sidebar.radio("Choose the transcription mode:", ("File Upload", "Real-time Recording"))
+app_mode = st.sidebar.radio("Choose the transcription mode:", ("File Upload", "Real-time Recording", "History"))
 
 if app_mode == "File Upload":
     st.header("Transcribe from an Audio File")
@@ -80,10 +82,19 @@ if app_mode == "File Upload":
         if st.button("Transcribe"):
             with st.spinner("Transcribing..."):
                 try:
-                    # Read the uploaded file into a BytesIO buffer
-                    buf = io.BytesIO(uploaded_file.read())
+                    # Get the content of the uploaded file
+                    audio_data = uploaded_file.getvalue()
+                    
                     # Perform prediction
-                    text = pipe.predict(buf)
+                    text = pipe.predict(io.BytesIO(audio_data))
+                    
+                    # Save to database
+                    database.add_transcription(
+                        mode="File Upload",
+                        transcription=text,
+                        audio_data=audio_data
+                    )
+                    
                     st.success("Transcription Complete!")
                     st.text_area("Transcription:", value=text, height=200)
                 except Exception as e:
@@ -94,10 +105,6 @@ elif app_mode == "Real-time Recording":
     st.warning("Real-time transcription is experimental and may not work perfectly in all browsers.")
 
     # --- Real-time Transcription Logic ---
-    # NOTE: Streamlit's execution model makes real-time audio processing challenging.
-    # This implementation uses a threading approach to handle audio capture and
-    # transcription in the background, updating the UI with the results.
-
     if 'transcriber' not in st.session_state:
         st.session_state.transcriber = None
     if 'is_recording' not in st.session_state:
@@ -116,6 +123,7 @@ elif app_mode == "Real-time Recording":
             self.speech_frames = 0
             self.transcription_queue = queue.Queue()
             self._stop_event = threading.Event()
+            self.full_recording = []
 
         def _transcribe_chunk(self, audio_data):
             try:
@@ -126,6 +134,7 @@ elif app_mode == "Real-time Recording":
                 st.error(f"Transcription error: {e}")
 
         def _process_audio(self, indata):
+            self.full_recording.append(indata.copy())
             audio_tensor = torch.from_numpy(indata.flatten()).float()
             resampled_audio = self.resampler(audio_tensor)
             audio_chunk_16k = (resampled_audio.numpy() * 32767).astype(np.int16)
@@ -145,13 +154,13 @@ elif app_mode == "Real-time Recording":
             else:
                 self.silence_frames += 1
                 if self.is_speaking and self.silence_frames > 50 and self.speech_frames > 10:
-                    full_audio = np.concatenate(self.audio_buffer)
+                    full_audio_chunk = np.concatenate(self.audio_buffer)
                     self.audio_buffer = []
                     self.speech_frames = 0
                     self.is_speaking = False
 
                     byte_io = io.BytesIO()
-                    write(byte_io, 16000, full_audio)
+                    write(byte_io, 16000, full_audio_chunk)
                     byte_io.seek(0)
                     
                     threading.Thread(target=self._transcribe_chunk, args=(byte_io,)).start()
@@ -176,6 +185,15 @@ elif app_mode == "Real-time Recording":
             if hasattr(self, 'stream'):
                 self.stream.stop()
                 self.stream.close()
+            
+            # Save the full recording
+            if self.full_recording:
+                full_audio = np.concatenate(self.full_recording)
+                byte_io = io.BytesIO()
+                write(byte_io, 44100, full_audio)
+                byte_io.seek(0)
+                return byte_io.getvalue()
+            return None
 
     col1, col2 = st.columns(2)
     with col1:
@@ -187,10 +205,19 @@ elif app_mode == "Real-time Recording":
 
     with col2:
         if st.button("Stop Recording", disabled=not st.session_state.is_recording):
-            st.session_state.is_recording = False
+            audio_data = None
             if st.session_state.transcriber:
-                st.session_state.transcriber.stop()
+                audio_data = st.session_state.transcriber.stop()
                 st.session_state.transcriber = None
+            
+            if st.session_state.transcription_text:
+                database.add_transcription(
+                    mode="Real-time",
+                    transcription=st.session_state.transcription_text,
+                    audio_data=audio_data
+                )
+            
+            st.session_state.is_recording = False
             st.info("Recording stopped.")
 
     if st.session_state.is_recording or st.session_state.transcription_text:
@@ -205,6 +232,32 @@ elif app_mode == "Real-time Recording":
                 pass
             text_area.text_area("Transcription:", value=st.session_state.transcription_text, height=300)
 
-        # Clear text after stopping
         if not st.session_state.is_recording and st.session_state.transcription_text:
-             st.session_state.transcription_text = ""
+            st.session_state.transcription_text = ""
+
+elif app_mode == "History":
+    st.header("Transcription History")
+    
+    records = database.get_all_transcriptions()
+    
+    if not records:
+        st.info("No transcriptions found in the history.")
+    else:
+        df = pd.DataFrame(records, columns=['Timestamp', 'Mode', 'Audio File', 'Transcription'])
+        df['Timestamp'] = pd.to_datetime(df['Timestamp']).dt.strftime('%Y-%m-%d %H:%M:%S')
+        
+        st.dataframe(df, use_container_width=True)
+        
+        for index, row in df.iterrows():
+            if row['Audio File']:
+                st.audio(row['Audio File'])
+
+        if st.button("Clear History"):
+            # For simplicity, this example just deletes the db file.
+            # In a real app, you might want a more sophisticated approach.
+            import os
+            if os.path.exists(database.DB_FILE):
+                os.remove(database.DB_FILE)
+                database.create_table()
+                st.success("History cleared.")
+                st.experimental_rerun()

@@ -1,0 +1,13 @@
+sounddevice
+numpy
+webrtcvad-wheels
+scipy
+torch
+torchaudio
+librosa
+tqdm
+pandas
+PyYAML
+matplotlib
+seaborn
+SQLAlchemy
