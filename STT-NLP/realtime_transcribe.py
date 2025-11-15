@@ -10,7 +10,6 @@ import torch
 import torchaudio
 from typing import Optional
 
-# --- Helper Function ---
 def get_default_input_device_samplerate() -> int:
     """Get the default input device's sample rate."""
     try:
@@ -18,7 +17,7 @@ def get_default_input_device_samplerate() -> int:
         if isinstance(device_info, dict) and 'default_samplerate' in device_info:
             return int(device_info['default_samplerate'])
         else:
-            # Fallback for systems where query_devices returns a list
+           
             devices = sd.query_devices()
             for i, device in enumerate(devices):
                 if device['name'] == 'default':
@@ -31,11 +30,13 @@ def get_default_input_device_samplerate() -> int:
 # --- Configuration ---
 CAPTURE_SAMPLE_RATE = get_default_input_device_samplerate()
 TARGET_SAMPLE_RATE = 16000  # 16kHz for the model
-CHUNK_DURATION_MS = 30  # 30ms
+CHUNK_DURATION_MS = 30  
 CHUNK_SAMPLES = int(CAPTURE_SAMPLE_RATE * CHUNK_DURATION_MS / 1000)
 VAD_AGGRESSIVENESS = 3  # 0 (least aggressive) to 3 (most aggressive)
-SILENCE_THRESHOLD_S = 0.5 # Seconds of silence to trigger transcription
+SILENCE_THRESHOLD_S = 0.5 
 MIN_SPEECH_DURATION_S = 0.3 # Minimum duration of speech to consider for transcription
+
+
 
 class RealtimeTranscriber:
     """
@@ -70,6 +71,7 @@ class RealtimeTranscriber:
 
     def _process_audio(self, indata: np.ndarray):
         """Processes a chunk of audio data from the input stream."""
+
         # Resample the audio first
         audio_tensor = torch.from_numpy(indata.flatten()).float()
         resampled_audio = self.resampler(audio_tensor)
@@ -125,7 +127,7 @@ class RealtimeTranscriber:
                         
         """Starts the real-time transcription process."""
                         
-        print(f"Starting real-time transcription with capture rate {CAPTURE_SAMPLE_RATE}Hz. Press Ctrl+C to stop.")
+        print(f"Starting real-time transcription with capture rate {CAPTURE_SAMPLE_RATE}Hz.")
                         
         self._stop_event = threading.Event()
                         
