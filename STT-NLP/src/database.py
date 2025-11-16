@@ -1,37 +1,15 @@
-import sqlite3
+from tinydb import TinyDB, Query
+from tinydb.operations import set
 import os
 from datetime import datetime
 
-DB_FILE = "transcriptions.db"
+DB_FILE = "transcriptions.json"
 UPLOADS_DIR = "uploads"
 
-def get_db_connection():
-    """Establishes a connection to the SQLite database."""
-    conn = sqlite3.connect(DB_FILE)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-def create_table():
-    """Creates the transcriptions table if it doesn't exist."""
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS transcriptions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            timestamp DATETIME NOT NULL,
-            mode TEXT NOT NULL,
-            audio_path TEXT,
-            transcription TEXT NOT NULL
-        )
-    """)
-    conn.commit()
-    conn.close()
+db = TinyDB(DB_FILE)
 
 def add_transcription(mode, transcription, audio_data=None):
     """Adds a new transcription record to the database."""
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    
     timestamp = datetime.now()
     audio_path = None
 
@@ -47,21 +25,28 @@ def add_transcription(mode, transcription, audio_data=None):
         with open(audio_path, "wb") as f:
             f.write(audio_data)
 
-    cursor.execute(
-        "INSERT INTO transcriptions (timestamp, mode, audio_path, transcription) VALUES (?, ?, ?, ?)",
-        (timestamp, mode, audio_path, transcription)
-    )
-    conn.commit()
-    conn.close()
+    db.insert({
+        'timestamp': timestamp.isoformat(),
+        'mode': mode,
+        'audio_path': audio_path,
+        'transcription': transcription
+    })
 
 def get_all_transcriptions():
     """Retrieves all transcription records from the database."""
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT timestamp, mode, audio_path, transcription FROM transcriptions ORDER BY timestamp DESC")
-    records = cursor.fetchall()
-    conn.close()
-    return records
+    records = db.all()
+    # Sort records by timestamp in descending order
+    records.sort(key=lambda x: x['timestamp'], reverse=True)
+    # Convert to a format similar to the old one for compatibility with app.py
+    return [
+        (r['timestamp'], r['mode'], r['audio_path'], r['transcription'])
+        for r in records
+    ]
 
-# --- Initialize the database and table on startup ---
-create_table()
+def clear_history():
+    """Clears all transcription records from the database."""
+    db.truncate()
+    # Also remove uploaded files
+    if os.path.exists(UPLOADS_DIR):
+        for filename in os.listdir(UPLOADS_DIR):
+            os.remove(os.path.join(UPLOADS_DIR, filename))

@@ -10,4 +10,4 @@ pandas
 PyYAML
 matplotlib
 seaborn
-SQLAlchemy
+tinydb

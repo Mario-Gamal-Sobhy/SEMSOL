@@ -253,11 +253,6 @@ elif app_mode == "History":
                 st.audio(row['Audio File'])
 
         if st.button("Clear History"):
-            # For simplicity, this example just deletes the db file.
-            # In a real app, you might want a more sophisticated approach.
-            import os
-            if os.path.exists(database.DB_FILE):
-                os.remove(database.DB_FILE)
-                database.create_table()
-                st.success("History cleared.")
-                st.experimental_rerun()
+            database.clear_history()
+            st.success("History cleared.")
+            st.experimental_rerun()
