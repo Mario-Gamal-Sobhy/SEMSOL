@@ -1,0 +1,10 @@
+artifact_location: /home/abdelrahman/void/GitHub/SEMSOL/STT-NLP/mlruns/0/models/m-5063662a9e6244f1bb31716a440c65ed/artifacts
+creation_timestamp: 1763377763737
+experiment_id: '0'
+last_updated_timestamp: 1763377779674
+model_id: m-5063662a9e6244f1bb31716a440c65ed
+model_type: null
+name: model
+source_run_id: 57a8d3f6247d429b87df8deb4e16a6a3
+status: 2
+status_message: null

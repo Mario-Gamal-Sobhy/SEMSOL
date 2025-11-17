@@ -27,7 +27,7 @@ def parse_args():
     parser.add_argument(
         "--arch",
         type=str,
-        default="resnet18",
+        default="resnet34",
         help="Network architecture, currently available: resnet18/34/50, mobilenetv2, mobileone_s0-s4."
     )
     parser.add_argument("--alpha", type=float, default=1, help="Regression loss coefficient.")

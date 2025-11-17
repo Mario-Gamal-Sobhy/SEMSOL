@@ -10,9 +10,10 @@ import torch
 import torchaudio
 from typing import Optional
 
+
 def get_default_input_device_samplerate() -> int:
     """Get the default input device's sample rate."""
-    try:
+    try: # Minimum duration of speech to consider for transcription
         device_info = sd.query_devices(kind='input')
         if isinstance(device_info, dict) and 'default_samplerate' in device_info:
             return int(device_info['default_samplerate'])
@@ -21,7 +22,9 @@ def get_default_input_device_samplerate() -> int:
             devices = sd.query_devices()
             for i, device in enumerate(devices):
                 if device['name'] == 'default':
+                    print(f"Detected default input device sample rate: {int(device['default_samplerate'])} Hz")
                     return int(device['default_samplerate'])
+            print("Could not find default input device, falling back to 44100 Hz.")
             return 44100 # Fallback if default not found
     except Exception as e:
         print(f"Could not query devices, falling back to 44100 Hz: {e}")
@@ -127,7 +130,7 @@ class RealtimeTranscriber:
                         
         """Starts the real-time transcription process."""
                         
-        print(f"Starting real-time transcription with capture rate {CAPTURE_SAMPLE_RATE}Hz.")
+        print(f"Starting real-time transcription with capture rate {CAPTURE_SAMPLE_RATE}Hz and blocksize {CHUNK_SAMPLES}.")
                         
         self._stop_event = threading.Event()
                         

@@ -23,7 +23,7 @@ class InferencePipeline:
 
     def load_model(self) -> SpeechToText:
         try:
-            p = self.model_trainer_config.params.model_trainer
+            p = self.model_trainer_config.params
             model = SpeechToText(
                 n_cnn_layers=p.n_cnn_layers,
                 n_rnn_layers=p.n_rnn_layers,
@@ -63,7 +63,7 @@ class InferencePipeline:
                 output, _ = self.model(spec_bctf, input_lengths)
 
             # Greedy CTC collapse: remove repeats and blanks
-            p = self.model_trainer_config.params.model_trainer
+            p = self.model_trainer_config.params
             blank_idx = int(p.blank_index)
             idx_seq = torch.argmax(output, dim=2).detach().cpu().numpy()[0]
             decoded = []

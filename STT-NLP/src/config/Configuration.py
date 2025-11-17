@@ -10,8 +10,8 @@ class ConfigurationManager:
 
     def __init__(self,config_filepath: Path = CONFIG_FILE_PATH, params_filepath: Path = PARAMS_FILE_PATH):
 
-        self.config = read_yaml(config_filepath)
-        self.params = read_yaml(params_filepath)
+        self.config = read_yaml(Path(config_filepath))
+        self.params = read_yaml(Path(params_filepath))
 
         create_directories([self.config.artifacts_root])
 
@@ -45,7 +45,7 @@ class ConfigurationManager:
             processed_test_path=Path(config.processed_test_path),
             original_sample_rate=self.params.audio_preprocessing.original_sample_rate,
             new_sample_rate=self.params.audio_preprocessing.new_sample_rate,
-            char_map_file=CHAR_MAP_FILE_PATH
+            char_map_file=Path(CHAR_MAP_FILE_PATH)
         )
 
         return data_transformation_config
@@ -53,16 +53,15 @@ class ConfigurationManager:
     def get_model_trainer_config(self) -> ModelTrainerConfig:
 
         config = self.config.model_trainer
-        parameters = self.params
-
+        
         model_trainer_config = ModelTrainerConfig(
             root_dir=Path(config.root_dir),
             train_data_path = Path(config.train_data_path),
             test_data_path = Path(config.test_data_path),
             model_name = Path(config.root_dir) / Path(config.model_name),
-            params = parameters,  
+            params = self.params.model_trainer,  
             target_column = config.target_column,
-            char_map_file = CHAR_MAP_FILE_PATH,
+            char_map_file = Path(CHAR_MAP_FILE_PATH),
             processed_train_path = Path(self.config.data_transformation.processed_train_path),
             processed_test_path = Path(self.config.data_transformation.processed_test_path)
         )

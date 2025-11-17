@@ -57,3 +57,26 @@ def load_bin(path: Path) -> Any:
     data = joblib.load(filename=path)
     logger.info(f"binary file loaded from: {path}")
     return data
+
+@typechecked
+def get_nlp_config() -> ConfigBox:
+    params = read_yaml(Path('params.yaml'))
+    nlp_params = params.nlp_model_trainer
+    
+    config = ConfigBox({
+        "data_path": nlp_params.data_path,
+        "model_path": nlp_params.model_path,
+        "vocab_path": nlp_params.vocab_path,
+        "max_len": nlp_params.max_len,
+        "embedding_dim": nlp_params.embedding_dim,
+        "hidden_dim": nlp_params.hidden_dim,
+        "output_dim": nlp_params.output_dim,
+        "n_layers": nlp_params.n_layers,
+        "drop_prob": nlp_params.drop_prob,
+        "epochs": nlp_params.epochs,
+        "batch_size": nlp_params.batch_size,
+        "learning_rate": nlp_params.learning_rate,
+        "label_to_int": nlp_params.label_to_int,
+        "int_to_label": nlp_params.int_to_label
+    })
+    return config

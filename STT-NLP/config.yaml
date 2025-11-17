@@ -1,25 +1,32 @@
 artifacts_root: artifacts
 
 data_ingestion:
-  root_dir: artifacts/data_ingestion/
-  data_path : datasets/LibriSpeech/
-  audio_path : artifacts/data_ingestion/audio/
-  source_URL : https://www.openslr.org/resources/12/train-clean-100.tar.gz
-  local_data_file: artifacts/data_ingestion/
+  root_dir: artifacts/data_ingestion
+  data_path: artifacts/data_ingestion/data
+  audio_path: artifacts/data_ingestion/audio
+  source_URL: https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2
+  local_data_file: artifacts/data_ingestion/data.tar.bz2
 
 data_transformation:
-  root_dir: artifacts/data_transformation/
-  data_path: artifacts/data_ingestion/
-  audio_path : artifacts/data_ingestion/audio/
-  preprocessor_object_file: artifacts/data_transformation/preprocessor.pkl
-  train_data_path: artifacts/data_ingestion/train.csv
-  test_data_path: artifacts/data_ingestion/test.csv
+  root_dir: artifacts/data_transformation
+  data_path: artifacts/data_ingestion/data/LJSpeech-1.1/wavs
+  audio_path: artifacts/data_ingestion/audio
+  train_data_path: artifacts/data_transformation/train
+  test_data_path: artifacts/data_transformation/test
   processed_train_path: artifacts/data_transformation/train_processed.csv
   processed_test_path: artifacts/data_transformation/test_processed.csv
+  preprocessor_object_file: artifacts/data_transformation/preprocessor.pkl
 
 model_trainer:
   root_dir: artifacts/model_trainer
-  train_data_path: artifacts/data_ingestion/train.csv
-  test_data_path: artifacts/data_ingestion/test.csv
+  train_data_path: artifacts/data_transformation/train
+  test_data_path: artifacts/data_transformation/test
   model_name: model.pt
-  target_column: transcript
+  target_column: text
+  char_map_file: src/config/char_map.txt
+  processed_train_path: artifacts/data_transformation/train_processed.csv
+  processed_test_path: artifacts/data_transformation/test_processed.csv
+
+mlflow_config:
+  tracking_uri: mlruns
+  remote_server_uri: mlruns

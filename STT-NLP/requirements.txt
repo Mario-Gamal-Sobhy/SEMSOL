@@ -11,3 +11,6 @@ PyYAML
 matplotlib
 seaborn
 tinydb
+spacy==3.7.4
+streamlit
+mlflow

@@ -10,7 +10,7 @@ def parse_arguments():
 
     parser.add_argument(
         '-w', '--weight',
-        default='resnet34.pt',
+        default='resnet34_gaze.pt',
         type=str,
         help='Trained state_dict file path to open'
     )
@@ -47,14 +47,17 @@ def onnx_export(params):
     # Set device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    # Initialize model
-    model = get_model(params.model, bins, inference_mode=True)
+    # Initialize model with pretrained weights
+    model = get_model(params.model, bins, pretrained=True, inference_mode=True)
     model.to(device)
 
-    # Load weights
-    state_dict = torch.load(params.weight, map_location=device)
-    model.load_state_dict(state_dict)
-    print("Gaze model loaded successfully!")
+    # If a weight file is provided, load it to override pretrained weights
+    if os.path.exists(params.weight):
+        state_dict = torch.load(params.weight, map_location=device)
+        model.load_state_dict(state_dict)
+        print(f"Gaze model weights loaded successfully from {params.weight}!")
+    else:
+        print("Gaze model initialized with pretrained weights (no custom weights loaded).")
 
     # Eval mode
     model.eval()

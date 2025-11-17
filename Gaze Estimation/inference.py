@@ -86,8 +86,8 @@ class EngagementScorer:
 # -------------------------
 def parse_args():
     parser = argparse.ArgumentParser(description="Gaze + Blink Engagement Estimation")
-    parser.add_argument("--model", type=str, default="resnet34", help="Model name")
-    parser.add_argument("--weight", type=str, default="weights/resnet34.pt", help="Model weights path")
+    parser.add_argument("--model", type=str, default="resnet18", help="Model name")
+    parser.add_argument("--weight", type=str, default="weights/resnet18.pt", help="Model weights path")
     parser.add_argument("--view", action="store_true", default=True, help="Display video window")
     parser.add_argument("--source", type=str, default="assets/in_video.mp4", help="Video file or webcam index")
     parser.add_argument("--output", type=str, default="output.mp4", help="Output video path")
@@ -186,7 +186,26 @@ def main(params):
 
             # Gaze estimation
             start_time = time.time()
-            bboxes, keypoints = face_detector.detect(frame)
+            detected_faces = face_detector.detect(frame)
+            print(f"Type of detected_faces: {type(detected_faces)}")
+            if isinstance(detected_faces, list) and detected_faces:
+                print(f"Type of first element in detected_faces: {type(detected_faces[0])}")
+                if isinstance(detected_faces[0], dict):
+                    print(f"Keys of first dictionary in detected_faces: {detected_faces[0].keys()}")
+                else:
+                    print(f"First element in detected_faces: {detected_faces[0]}")
+            else:
+                print(f"detected_faces: {detected_faces}")
+
+            bboxes = []
+            keypoints = []
+            if detected_faces: # Check if any faces were detected
+                for face_data in detected_faces:
+                    # Placeholder for now, will be corrected after inspecting print output
+                    # Assuming face_data is a dictionary with 'bbox' and 'landmarks' keys
+                    # This part will be fixed based on the print output
+                    bboxes.append(face_data['bbox']) # Placeholder
+                    keypoints.append(face_data['landmarks']) # Placeholder
             log_data["face_det_ms"] = (time.time() - start_time) * 1000
             log_data["num_faces"] = len(bboxes)
 
