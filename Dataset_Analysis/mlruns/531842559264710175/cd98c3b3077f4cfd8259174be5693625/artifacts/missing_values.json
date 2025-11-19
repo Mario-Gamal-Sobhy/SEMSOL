@@ -1,0 +1,18 @@
+{
+  "timestamp_ms": 0,
+  "frame": 0,
+  "face_det_ms": 0,
+  "gaze_est_ms": 197,
+  "blink_det_ms": 0,
+  "num_faces": 0,
+  "pitch_deg": 197,
+  "yaw_deg": 197,
+  "ear": 0,
+  "blink_rate_10s_bps": 0,
+  "blink_state": 0,
+  "engagement_score": 197,
+  "engagement_level": 197,
+  "engagement_trend": 197,
+  "is_blinking": 0,
+  "is_calibrated": 0
+}

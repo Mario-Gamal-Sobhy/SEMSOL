@@ -1,0 +1,14 @@
+artifact_uri: file:///home/abdelrahman/void/GitHub/daisee_analysis/mlruns/531842559264710175/bcc272a3c2dc414f8e8c2e41e1c7db01/artifacts
+end_time: 1763357506133
+entry_point_name: ''
+experiment_id: '531842559264710175'
+lifecycle_stage: active
+run_id: bcc272a3c2dc414f8e8c2e41e1c7db01
+run_name: KNN
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1763357500316
+status: 3
+tags: []
+user_id: abdelrahman

@@ -1,0 +1,14 @@
+artifact_uri: file:///home/abdelrahman/void/GitHub/daisee_analysis/mlruns/531842559264710175/8f5db47234674acbac74dc63c9e370ee/artifacts
+end_time: 1763357459599
+entry_point_name: ''
+experiment_id: '531842559264710175'
+lifecycle_stage: active
+run_id: 8f5db47234674acbac74dc63c9e370ee
+run_name: preprocessing_minimal
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1763357459503
+status: 3
+tags: []
+user_id: abdelrahman

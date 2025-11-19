@@ -1,0 +1,10 @@
+artifact_location: file:///home/abdelrahman/void/GitHub/daisee_analysis/mlruns/531842559264710175/models/m-d2dc9ec9f66e4f43bd1e2637a17a8e4b/artifacts
+creation_timestamp: 1763357050021
+experiment_id: '531842559264710175'
+last_updated_timestamp: 1763357061762
+model_id: m-d2dc9ec9f66e4f43bd1e2637a17a8e4b
+model_type: null
+name: model_SVM
+source_run_id: 28f163437218431bba0f468a8ea27349
+status: 2
+status_message: null

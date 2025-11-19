@@ -1,0 +1,14 @@
+artifact_uri: file:///home/abdelrahman/void/GitHub/daisee_analysis/mlruns/531842559264710175/c4de19398aa944bc8a49a50dd14195d6/artifacts
+end_time: 1763357048329
+entry_point_name: ''
+experiment_id: '531842559264710175'
+lifecycle_stage: active
+run_id: c4de19398aa944bc8a49a50dd14195d6
+run_name: LogisticRegression
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1763357038004
+status: 3
+tags: []
+user_id: abdelrahman

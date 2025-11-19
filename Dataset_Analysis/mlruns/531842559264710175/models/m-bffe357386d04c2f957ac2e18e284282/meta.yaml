@@ -1,0 +1,10 @@
+artifact_location: file:///home/abdelrahman/void/GitHub/daisee_analysis/mlruns/531842559264710175/models/m-bffe357386d04c2f957ac2e18e284282/artifacts
+creation_timestamp: 1763357495038
+experiment_id: '531842559264710175'
+last_updated_timestamp: 1763357500304
+model_id: m-bffe357386d04c2f957ac2e18e284282
+model_type: null
+name: model_DecisionTree
+source_run_id: 957f25c35d8642c5be6360ca3f0bfcca
+status: 2
+status_message: null

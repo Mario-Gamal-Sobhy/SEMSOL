@@ -1,0 +1,10 @@
+artifact_location: file:///home/abdelrahman/void/GitHub/daisee_analysis/mlruns/531842559264710175/models/m-bd666c2c3c9e4d4c9d1f1fd7c292a1ca/artifacts
+creation_timestamp: 1763357074914
+experiment_id: '531842559264710175'
+last_updated_timestamp: 1763357083927
+model_id: m-bd666c2c3c9e4d4c9d1f1fd7c292a1ca
+model_type: null
+name: model_KNN
+source_run_id: 825063b728354069aa215fc40347dfc9
+status: 2
+status_message: null

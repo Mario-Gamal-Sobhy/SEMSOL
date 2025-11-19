@@ -1,0 +1,10 @@
+artifact_location: file:///home/abdelrahman/void/GitHub/daisee_analysis/mlruns/531842559264710175/models/m-d1be549bbc36420ebcf912de438b04b6/artifacts
+creation_timestamp: 1763357475039
+experiment_id: '531842559264710175'
+last_updated_timestamp: 1763357482019
+model_id: m-d1be549bbc36420ebcf912de438b04b6
+model_type: null
+name: model_RandomForest
+source_run_id: b47a508dc59b448299616724c4c565d0
+status: 2
+status_message: null

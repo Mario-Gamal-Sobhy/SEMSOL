@@ -1,0 +1,14 @@
+artifact_uri: file:///home/abdelrahman/void/GitHub/daisee_analysis/mlruns/531842559264710175/8e850adc65524b808bc2a7d5aac1bd15/artifacts
+end_time: 1763357493840
+entry_point_name: ''
+experiment_id: '531842559264710175'
+lifecycle_stage: active
+run_id: 8e850adc65524b808bc2a7d5aac1bd15
+run_name: SVM
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1763357488090
+status: 3
+tags: []
+user_id: abdelrahman

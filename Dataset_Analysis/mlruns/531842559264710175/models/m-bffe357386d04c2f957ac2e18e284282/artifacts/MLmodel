@@ -1,0 +1,22 @@
+artifact_path: file:///home/abdelrahman/void/GitHub/daisee_analysis/mlruns/531842559264710175/models/m-bffe357386d04c2f957ac2e18e284282/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.12.11
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.7.2
+mlflow_version: 3.6.0
+model_id: m-bffe357386d04c2f957ac2e18e284282
+model_size_bytes: 14265
+model_uuid: m-bffe357386d04c2f957ac2e18e284282
+prompts: null
+run_id: 957f25c35d8642c5be6360ca3f0bfcca
+utc_time_created: '2025-11-17 05:31:35.062008'

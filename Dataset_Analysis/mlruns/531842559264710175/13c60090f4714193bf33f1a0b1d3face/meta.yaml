@@ -1,0 +1,14 @@
+artifact_uri: file:///home/abdelrahman/void/GitHub/daisee_analysis/mlruns/531842559264710175/13c60090f4714193bf33f1a0b1d3face/artifacts
+end_time: 1763357472167
+entry_point_name: ''
+experiment_id: '531842559264710175'
+lifecycle_stage: active
+run_id: 13c60090f4714193bf33f1a0b1d3face
+run_name: feature_distributions
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1763357466089
+status: 3
+tags: []
+user_id: abdelrahman

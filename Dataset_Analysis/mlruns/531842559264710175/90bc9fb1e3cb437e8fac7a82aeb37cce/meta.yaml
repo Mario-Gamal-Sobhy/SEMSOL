@@ -1,0 +1,14 @@
+artifact_uri: file:///home/abdelrahman/void/GitHub/daisee_analysis/mlruns/531842559264710175/90bc9fb1e3cb437e8fac7a82aeb37cce/artifacts
+end_time: 1763384890367
+entry_point_name: ''
+experiment_id: '531842559264710175'
+lifecycle_stage: active
+run_id: 90bc9fb1e3cb437e8fac7a82aeb37cce
+run_name: DecisionTree
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1763384878492
+status: 3
+tags: []
+user_id: abdelrahman

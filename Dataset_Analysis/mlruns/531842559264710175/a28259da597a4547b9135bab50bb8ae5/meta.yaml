@@ -1,0 +1,14 @@
+artifact_uri: file:///home/abdelrahman/void/GitHub/daisee_analysis/mlruns/531842559264710175/a28259da597a4547b9135bab50bb8ae5/artifacts
+end_time: 1763384858704
+entry_point_name: ''
+experiment_id: '531842559264710175'
+lifecycle_stage: active
+run_id: a28259da597a4547b9135bab50bb8ae5
+run_name: RandomForest
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1763384843494
+status: 3
+tags: []
+user_id: abdelrahman

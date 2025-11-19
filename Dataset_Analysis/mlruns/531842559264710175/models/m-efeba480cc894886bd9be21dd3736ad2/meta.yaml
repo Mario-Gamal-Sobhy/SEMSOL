@@ -1,0 +1,10 @@
+artifact_location: file:///home/abdelrahman/void/GitHub/daisee_analysis/mlruns/531842559264710175/models/m-efeba480cc894886bd9be21dd3736ad2/artifacts
+creation_timestamp: 1763384859714
+experiment_id: '531842559264710175'
+last_updated_timestamp: 1763384868577
+model_id: m-efeba480cc894886bd9be21dd3736ad2
+model_type: null
+name: model_LogisticRegression
+source_run_id: e002c7ae62d54322ba80453671aa786f
+status: 2
+status_message: null
