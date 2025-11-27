@@ -355,7 +355,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Mario Gamal Sobhy**
 
 - GitHub: [@Mario-Gamal-Sobhy](https://github.com/Mario-Gamal-Sobhy)
-- Email: [your.email@example.com](mailto:your.email@example.com)
+
 
 ---
 
