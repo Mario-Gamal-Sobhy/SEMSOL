@@ -1,6 +1,4 @@
-# Copyright 2025 Yakhyokhuja Valikhujaev
-# Author: Yakhyokhuja Valikhujaev
-# GitHub: https://github.com/yakhyo
+
 
 import cv2
 import uniface
