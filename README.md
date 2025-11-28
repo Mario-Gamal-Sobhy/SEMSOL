@@ -11,20 +11,6 @@
 
 [Demo](#-demo) • [Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Documentation](#-documentation)
 
-</div>
-
----
-
-## 🎬 Demo
-
-<div align="center">
-
-[![SEMSOL Demo Video](https://img.youtube.com/vi/_XyUh5nAyrw/maxresdefault.jpg)](https://www.youtube.com/watch?v=_XyUh5nAyrw)
-
-**▶️ Click to watch the full demo**
-
-</div>
-
 ---
 
 ## 🎬 Demo
@@ -36,32 +22,6 @@
 [![SEMSOL Demo Video](https://img.youtube.com/vi/_XyUh5nAyrw/maxresdefault.jpg)](https://www.youtube.com/watch?v=_XyUh5nAyrw)
 
 **Click to watch:** Real-time engagement monitoring with live analytics and session reports
-
-</div>
-
-### 🎥 Demo Highlights
-
-| Feature | Preview |
-|---------|---------|
-| **Real-time Monitoring** | ![Monitoring Demo](assets/monitoring_demo.gif) |
-| **Analytics Dashboard** | ![Analytics Demo](assets/analytics_demo.gif) |
-| **Engagement Timeline** | ![Timeline Demo](assets/timeline_demo.gif) |
-
-> 💡 **Tip**: Try the [live demo](https://semsol-demo.streamlit.app) or watch the [2-minute tutorial](https://youtube.com/watch?v=_XyUh5nAyrw)
-
----
-
-## 🎬 Demo
-
-<div align="center">
-
-### 📹 Watch SEMSOL in Action
-
-[![SEMSOL Demo Video](https://img.youtube.com/vi/_XyUh5nAyrw/maxresdefault.jpg)](https://www.youtube.com/watch?v=_XyUh5nAyrw)
-
-**Click the image above to watch the full demo** ▶️
-
-*Real-time engagement monitoring • Live analytics • Session reports*
 
 </div>
 
