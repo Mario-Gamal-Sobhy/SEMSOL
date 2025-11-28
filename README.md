@@ -1,4 +1,3 @@
-
 # 🧠 SEMSOL - Student Engagement Monitoring System
 
 <div align="center">
@@ -11,6 +10,58 @@
 **Real-time Multi-Modal Student Engagement Detection using Computer Vision & Deep Learning**
 
 [Demo](#-demo) • [Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Documentation](#-documentation)
+
+</div>
+
+---
+
+## 🎬 Demo
+
+<div align="center">
+
+[![SEMSOL Demo Video](https://img.youtube.com/vi/YOUR_VIDEO_ID/maxresdefault.jpg)](https://www.youtube.com/watch?v=_XyUh5nAyrw)
+
+**▶️ Click to watch the full demo**
+
+</div>
+
+---
+
+## 🎬 Demo
+
+<div align="center">
+
+### 📹 Watch SEMSOL in Action
+
+[![SEMSOL Demo Video](https://img.youtube.com/vi/YOUR_VIDEO_ID/maxresdefault.jpg)](https://www.youtube.com/watch?v=YOUR_VIDEO_ID)
+
+**Click to watch:** Real-time engagement monitoring with live analytics and session reports
+
+</div>
+
+### 🎥 Demo Highlights
+
+| Feature | Preview |
+|---------|---------|
+| **Real-time Monitoring** | ![Monitoring Demo](assets/monitoring_demo.gif) |
+| **Analytics Dashboard** | ![Analytics Demo](assets/analytics_demo.gif) |
+| **Engagement Timeline** | ![Timeline Demo](assets/timeline_demo.gif) |
+
+> 💡 **Tip**: Try the [live demo](https://semsol-demo.streamlit.app) or watch the [2-minute tutorial](https://youtube.com/watch?v=TUTORIAL_ID)
+
+---
+
+## 🎬 Demo
+
+<div align="center">
+
+### 📹 Watch SEMSOL in Action
+
+[![SEMSOL Demo Video](https://img.youtube.com/vi/YOUR_VIDEO_ID/maxresdefault.jpg)](https://www.youtube.com/watch?v=YOUR_VIDEO_ID)
+
+**Click the image above to watch the full demo** ▶️
+
+*Real-time engagement monitoring • Live analytics • Session reports*
 
 </div>
 
@@ -355,7 +406,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Mario Gamal Sobhy**
 
 - GitHub: [@Mario-Gamal-Sobhy](https://github.com/Mario-Gamal-Sobhy)
-
+- Email: [your.email@example.com](mailto:your.email@example.com)
 
 ---
 
