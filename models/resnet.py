@@ -7,7 +7,7 @@ from typing import Any, Callable, List, Optional, Type, Tuple
 
 __all__ = ["resnet18", "resnet34", "resnet50"]
 
-
+#gdgdgdgd
 def conv3x3(in_channels: int, out_channels: int, stride: int = 1, groups: int = 1, dilation: int = 1) -> nn.Conv2d:
     """3x3 convolution with padding"""
     return nn.Conv2d(
@@ -297,3 +297,4 @@ def resnet50(*, pretrained: bool = True, progress: bool = True, **kwargs: Any) -
         weights = None
 
     return _resnet(Bottleneck, [3, 4, 6, 3], weights, progress, **kwargs)
+
