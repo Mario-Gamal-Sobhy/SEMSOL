@@ -1,4 +1,4 @@
-s<div align="center">
+<div align="center">
 
 <img src="logo2.png" alt="SEMSOL Logo" width="1500" style="border-radius: 50%;"/>
 
