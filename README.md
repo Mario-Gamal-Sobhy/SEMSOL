@@ -121,7 +121,7 @@ The app will open in your browser at `http://localhost:8501`
 - **ML Classifier**: Toggle trained model vs rule-based classification
 - **Visual Settings**: Customize bounding boxes and gaze arrows
 
-### 2️⃣ Start Monitoring
+### 2️⃣ Start Monitoring --
 
 1. Click **"🚀 Start Monitoring"** in the sidebar
 2. Wait for camera initialization (2-3 seconds)
