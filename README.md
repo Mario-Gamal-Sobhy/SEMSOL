@@ -2,7 +2,7 @@
 
 <img src="logo2.png" alt="SEMSOL Logo" width="1500" style="border-radius: 50%;"/>
 
-# 🧠 SEMSOL - Student Engagement Monitoring System
+#  SEMSOL - Student Engagement Monitoring System
 
 <div align="center">
 
@@ -17,7 +17,7 @@
 
 ---
 
-## 🎬 Demo
+##  Demo
 
 <div align="center">
 
@@ -37,11 +37,11 @@
 
 ### 🌟 Why SEMSOL?
 
-- 📚 **Educational Insights**: Help educators understand student attention patterns
-- 🔬 **Research Tool**: Collect quantitative engagement data for academic research
-- 💡 **Productivity Tracking**: Monitor focus and concentration during work/study
-- ♿ **Accessibility**: Analyze visual attention patterns for inclusive design
-- 📊 **Data-Driven Decisions**: Make informed improvements based on engagement metrics
+-  **Educational Insights**: Help educators understand student attention patterns
+-  **Research Tool**: Collect quantitative engagement data for academic research
+-  **Productivity Tracking**: Monitor focus and concentration during work/study
+-  **Accessibility**: Analyze visual attention patterns for inclusive design
+-  **Data-Driven Decisions**: Make informed improvements based on engagement metrics
 
 ---
 
@@ -49,10 +49,10 @@
 
 ### 🎥 Real-Time Monitoring
 
-- **👁️ Blink Detection**: Tracks eye blinks to detect drowsiness, stress, and distraction
-- **👀 Gaze Estimation**: Monitors head orientation (pitch/yaw) to track attention direction
-- **🤖 ML Classification**: AI-powered engagement level prediction (4 levels)
-- **📹 Multi-Source Support**: Works with webcam or pre-recorded video files
+- ** Blink Detection**: Tracks eye blinks to detect drowsiness, stress, and distraction
+- ** Gaze Estimation**: Monitors head orientation (pitch/yaw) to track attention direction
+- ** ML Classification**: AI-powered engagement level prediction (4 levels)
+- ** Multi-Source Support**: Works with webcam or pre-recorded video files
 
 ### 📊 Comprehensive Analytics
 
