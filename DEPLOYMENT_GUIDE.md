@@ -70,10 +70,7 @@ Your app will fail to connect to MongoDB initially. You need to add the secrets.
 3.  Paste the following (using YOUR connection string from Step 1):
 
 ```toml
-[mongo]
-connection_string = "mongodb+srv://semsol_user:your_password@cluster0.abcde.mongodb.net/?retryWrites=true&w=majority"
-database_name = "semsol_engagement"
-```
+
 
 4.  Click **Save**.
 5.  The app should restart automatically and connect!
