@@ -1,4 +1,4 @@
-import os
+dimport os
 import argparse
 import torch
 from config import data_config
