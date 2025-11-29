@@ -288,7 +288,7 @@ SEMSOL/
 
 ---
 
-## 🔬 Research & Citations
+## 🔬 Research & Citations --
 
 If you use SEMSOL in your research, please cite:
 
