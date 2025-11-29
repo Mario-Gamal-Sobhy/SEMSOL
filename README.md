@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="logo2.png" alt="SEMSOL Logo" width="150" style="border-radius: 50%;"/>
+<img src="logo2.png" alt="SEMSOL Logo" width="1500" style="border-radius: 50%;"/>
 
 # 🧠 SEMSOL - Student Engagement Monitoring System
 
