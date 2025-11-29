@@ -400,6 +400,8 @@ Having issues? Here's how to get help:
 **⭐ If you find SEMSOL helpful, please consider giving it a star!**
 
 Made with ❤️ by [Mario Gamal Sobhy](https://github.com/Mario-Gamal-Sobhy)
+                 [Maximos Naseef Bassiet](https://github.com/maxemosnassef-dotcom)
+
 
 [⬆ Back to Top](#-semsol---student-engagement-monitoring-system)
 
